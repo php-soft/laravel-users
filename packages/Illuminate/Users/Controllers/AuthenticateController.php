@@ -2,7 +2,6 @@
 
 namespace PhpSoft\Illuminate\Users\Controllers;
 
-use Request;
 use Input;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -13,7 +12,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class AuthenticateController extends Controller
 {
     /**
-     * Login
+     * Login action
      * 
      * @return json
      */

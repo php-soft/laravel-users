@@ -44,3 +44,6 @@ I have included a helper command to generate a key as follows:
 $ php artisan jwt:generate
 ```
 this will generate a new random key, which will be used to sign your tokens.
+
+### 1.2 More
+Remove middleware `\App\Http\Middleware\VerifyCsrfToken` in `app/Http/Kernel.php`
