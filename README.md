@@ -46,4 +46,8 @@ $ php artisan jwt:generate
 this will generate a new random key, which will be used to sign your tokens.
 
 ### 1.2 More
-Remove middleware `\App\Http\Middleware\VerifyCsrfToken` in `app/Http/Kernel.php`
+Remove middlewares in `app/Http/Kernel.php` to support RESTful
+
+* `\App\Http\Middleware\EncryptCookies::class`
+* `\App\Http\Middleware\VerifyCsrfToken::class`
+
