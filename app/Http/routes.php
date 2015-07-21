@@ -15,4 +15,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/auth/login', '\\PhpSoft\\Illuminate\\Users\\Controllers\\AuthenticateController@login');
+Route::post('/auth/login', '\\PhpSoft\\Illuminate\\Users\\Controllers\\AuthController@login');
+Route::get('/me', '\\PhpSoft\\Illuminate\\Users\\Controllers\\UserController@authenticatedUser');

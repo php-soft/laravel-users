@@ -7,6 +7,16 @@ use JWTAuth;
 class UserController extends Controller
 {
     /**
+     * Instantiate a new UserController instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('jwt.auth');
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -14,10 +24,6 @@ class UserController extends Controller
      */
     public function authenticatedUser()
     {
-        $user = JWTAuth::parseToken()->authenticate();
-
-        dd($user);
-
-        return response()->json(null, 200);
+        return response()->json(\Auth::user(), 200);
     }
 }
