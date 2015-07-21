@@ -53,10 +53,10 @@ class AuthControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertNotNull($results->entities[0]->token);
 
-        $this->assertEquals($user->id, \Auth::user()->id);
+        $this->assertEquals($user->id, Auth::user()->id);
     }
 
-    public function testAuth()
+    public function testLogout()
     {
         $user = factory(App\User::class)->create([
             'password'  => bcrypt('123456'),
@@ -64,6 +64,13 @@ class AuthControllerTest extends TestCase
         $credentials = [ 'email' => $user->email, 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
 
-        $res = $this->call('GET', '/me', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals($user->id, Auth::user()->id);
+
+        $res = $this->call('POST', '/auth/logout', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(204, $res->getStatusCode());
+        $this->assertNull(Auth::user());
+
+        $res = $this->call('POST', '/auth/logout', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(500, $res->getStatusCode());
     }
 }

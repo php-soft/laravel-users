@@ -3,6 +3,7 @@
 namespace PhpSoft\Illuminate\Users\Controllers;
 
 use Input;
+use Auth;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
@@ -33,5 +34,18 @@ class AuthController extends Controller
 
         // all good so return the token
         return response()->json(arrayView('tokens/show', compact('token')));
+    }
+
+    /**
+     * Logout action
+     * 
+     * @return Response
+     */
+    public function logout()
+    {
+        Auth::logout();
+        JWTAuth::invalidate(JWTAuth::getToken());
+
+        return response()->json(null, 204);
     }
 }
