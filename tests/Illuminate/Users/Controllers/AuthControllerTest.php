@@ -4,7 +4,6 @@ class AuthControllerTest extends TestCase
 {
     public function testLoginFailure()
     {
-        dump(bcrypt('123456'));
         // not send credentials
         $res = $this->call('POST', '/auth/login');
         $this->assertEquals(401, $res->getStatusCode());
