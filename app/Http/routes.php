@@ -17,4 +17,4 @@ Route::get('/', function () {
 
 Route::post('/auth/login', '\\PhpSoft\\Illuminate\\Users\\Controllers\\AuthController@login');
 Route::post('/auth/logout', '\\PhpSoft\\Illuminate\\Users\\Controllers\\AuthController@logout');
-Route::get('/me', '\\PhpSoft\\Illuminate\\Users\\Controllers\\UserController@authenticatedUser');
+Route::get('/me', '\\PhpSoft\\Illuminate\\Users\\Controllers\\UserController@authenticated');

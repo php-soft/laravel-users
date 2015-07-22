@@ -2,6 +2,7 @@
 
 namespace PhpSoft\Illuminate\Users\Controllers;
 
+use Auth;
 use JWTAuth;
 
 class UserController extends Controller
@@ -24,8 +25,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function authenticatedUser()
+    public function authenticated()
     {
-        return response()->json(\Auth::user(), 200);
+        return response()->json(arrayView('user/read', [
+            'user' => Auth::user()
+        ]), 200);
     }
 }
