@@ -58,6 +58,24 @@ this will generate a new random key, which will be used to sign your tokens.
 
 ## 2. Migration and Seeding
 
+Now generate the migration:
+
+```sh
+$ php artisan users:migrate
+```
+
+It will generate the `<timestamp>_entrust_setup_tables.php` migration. You may now run it with the artisan migrate command:
+
+```sh
+$ php artisan migrate
+```
+
+Running Seeders with command:
+
+```sh
+$ php artisan db:seed --class=UserModuleSeeder
+```
+
 ## 3. Usage
 
 ### 3.1. Authenticate with JSON Web Token
