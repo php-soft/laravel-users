@@ -1,5 +1,7 @@
 # Laravel Users Module
 
+[![Build Status](https://travis-ci.org/php-soft/laravel-users.svg)](https://travis-ci.org/php-soft/laravel-users)
+
 > This module is use JWTAuth and ENTRUST libraries
 > 
 > 1. https://github.com/tymondesigns/jwt-auth (JSON Web Token)
