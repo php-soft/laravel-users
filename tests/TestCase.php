@@ -26,7 +26,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate', [ '--path' => '/packages/Illuminate/Users/database/migrations' ]);
+        Artisan::call('migrate');
         Artisan::call('db:seed', [ '--class' => 'UserModuleSeeder' ]);
     }
 
