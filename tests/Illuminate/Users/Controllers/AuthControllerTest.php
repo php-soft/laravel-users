@@ -10,7 +10,7 @@ class AuthControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
-        $this->assertEquals('Invalid Credentials.', $results->error);
+        $this->assertEquals('Invalid Credentials.', $results->message);
 
         // user not found
         $res = $this->call('POST', '/auth/login', [
@@ -21,7 +21,7 @@ class AuthControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
-        $this->assertEquals('Invalid Credentials.', $results->error);
+        $this->assertEquals('Invalid Credentials.', $results->message);
 
         // wrong password
         $res = $this->call('POST', '/auth/login', [
@@ -32,7 +32,7 @@ class AuthControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
-        $this->assertEquals('Invalid Credentials.', $results->error);
+        $this->assertEquals('Invalid Credentials.', $results->message);
     }
 
     public function testLoginSuccess()
