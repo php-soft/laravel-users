@@ -1,53 +1,94 @@
 # Laravel Users Module
 
+> This module is use JWTAuth and ENTRUST libraries
+> 
+> 1. https://github.com/tymondesigns/jwt-auth (JSON Web Token)
+> 2. https://github.com/Zizaco/entrust (Role-based Permissions)
+
 ## 1. Installation
-### 1.1. Tymon\JWTAuth
-
-> Reference https://github.com/tymondesigns/jwt-auth
-
-To install this package you will need:
-* Laravel 4 or 5 (see compatibility table)
-* PHP 5.4 +
 
 Install via composer - edit your `composer.json` to require the package.
-```
+
+```js
 "require": {
-    "php-soft/laravel-users": "dev-master"
+    // ...
+    "php-soft/laravel-users": "dev-master",
 }
 ```
 
 Then run `composer update` in your terminal to pull it in.
 Once this has finished, you will need to add the service provider to the `providers` array in your `app.php` config as follows:
+
 ```php
-Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class
+'providers' => [
+    // ...
+    PhpSoft\Illuminate\Users\Providers\UserServiceProvider::class,
+    Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
+    Zizaco\Entrust\EntrustServiceProvider::class,
+]
 ```
 
-Next, also in the `app.php` config file, under the `aliases` array, you may want to add the `JWTAuth` facade.
+Next, also in the `app.php` config file, under the `aliases` array, you may want to add facades.
+
 ```php
-'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class
+'aliases' => [
+    // ...
+    'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
+    'Entrust' => Zizaco\Entrust\EntrustFacade::class,
+]
 ```
 
-Also included is a Facade for the PayloadFactory. This gives you finer control over the payloads you create if you require it
-```php
-'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class
-```
+You will want to publish the config using the following command:
 
-Finally, you will want to publish the config using the following command:
 ```sh
-$ php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\JWTAuthServiceProvider"
+$ php artisan vendor:publish --provider="PhpSoft\Illuminate\Users\Providers\UserServiceProvider"
 ```
 
-***Don't forget to set a secret key in the config file!***
+***Don't forget to set a secret key in the jwt config file!***
 
 I have included a helper command to generate a key as follows:
+
 ```sh
 $ php artisan jwt:generate
 ```
+
 this will generate a new random key, which will be used to sign your tokens.
 
-### 1.2 More
-Remove middlewares in `app/Http/Kernel.php` to support RESTful
+## 2. Migration and Seeding
+
+## 3. Usage
+
+### 3.1. Authenticate with JSON Web Token
+
+Remove middlewares in `app/Http/Kernel.php`
 
 * `\App\Http\Middleware\EncryptCookies::class`
 * `\App\Http\Middleware\VerifyCsrfToken::class`
 
+Add route middlewares in `app/Http/Kernel.php`
+```php
+protected $routeMiddleware = [
+    // ...
+    'jwt.auth' => \PhpSoft\Illuminate\Users\Middleware\Authenticate::class,
+    'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
+];
+```
+
+### 3.2. Role-based Permissions
+
+Use the `UserTrait` trait in your existing `App\User` model. For example:
+
+```php
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use PhpSoft\Illuminate\Users\Models\UserTrait;
+
+class User extends Model
+{
+    use UserTrait; // add this trait to your user model
+    // ...
+}
+```

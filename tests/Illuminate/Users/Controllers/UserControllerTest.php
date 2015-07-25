@@ -20,4 +20,14 @@ class UserControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals('Administrator', $results->entities[0]->name);
     }
+
+    public function testRole()
+    {
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+
+        $user = Auth::user();
+        $this->assertTrue($user->hasRole('admin'));
+        $this->assertFalse($user->can('edit-user'));
+    }
 }
