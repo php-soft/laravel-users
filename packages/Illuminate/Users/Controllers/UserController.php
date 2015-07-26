@@ -11,18 +11,6 @@ use PhpSoft\Illuminate\Users\Models\User;
 class UserController extends Controller
 {
     /**
-     * Instantiate a new UserController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('jwt.auth', ['except' => 'register']);
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -30,6 +18,10 @@ class UserController extends Controller
      */
     public function authenticated()
     {
+        if (!$this->checkAuth()) {
+            return response()->json(null, 401);
+        }
+
         return response()->json(arrayView('user/read', [
             'user' => Auth::user()
         ]), 200);

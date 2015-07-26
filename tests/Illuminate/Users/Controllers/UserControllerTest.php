@@ -7,7 +7,7 @@ class UserControllerTest extends TestCase
         $res = $this->call('GET', '/me');
         $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals('Token not provided.', $results->message);
+        $this->assertEquals('Token is not provided.', $results->message);
     }
 
     public function testGetAuthenticatedUser()
