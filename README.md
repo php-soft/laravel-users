@@ -98,12 +98,10 @@ protected $routeMiddleware = [
 Add routes in `app/Http/routes.php`
 
 ```php
-
 Route::post('/auth/login', '\PhpSoft\Illuminate\Users\Controllers\AuthController@login');
 Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
 Route::post('/register', '\PhpSoft\Illuminate\Users\Controllers\UserController@register');
 Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
-
 ```
 
 ### 3.2. Role-based Permissions
@@ -123,4 +121,47 @@ class User extends Model
     use UserTrait; // add this trait to your user model
     // ...
 }
+```
+
+Create `Role` and `Permission` follows
+
+```php
+// create role admin (default this role has been created on UserModuleSeeder)
+$admin = new Role();
+$admin->name         = 'admin';
+$admin->display_name = 'User Administrator'; // optional
+$admin->description  = 'User is allowed to manage and edit other users'; // optional
+$admin->save();
+
+// role attach alias
+$user->attachRole($admin); // parameter can be an Role object, array, or id
+
+// or eloquent's original technique
+$user->roles()->attach($admin->id); // id only
+
+// create permission
+$createPost = new Permission();
+$createPost->name         = 'create-post';
+$createPost->display_name = 'Create Posts'; // optional
+$createPost->description  = 'create new blog posts'; // optional
+$createPost->save();
+
+$admin->attachPermission($createPost);
+// equivalent to $admin->perms()->sync(array($createPost->id));
+```
+
+Now we can check for roles and permissions simply by doing:
+
+```php
+$user->hasRole('owner');   // false
+$user->hasRole('admin');   // true
+$user->can('edit-user');   // false
+$user->can('create-post'); // true
+```
+
+Both `hasRole()` and `can()` can receive an array of roles & permissions to check:
+
+```php
+$user->hasRole(['owner', 'admin']);       // true
+$user->can(['edit-user', 'create-post']); // true
 ```
