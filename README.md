@@ -111,8 +111,6 @@ Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if 
 Use the `UserTrait` trait in your existing `App\User` model. For example:
 
 ```php
-<?php
-
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
