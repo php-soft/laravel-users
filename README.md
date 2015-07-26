@@ -99,9 +99,11 @@ Add routes in `app/Http/routes.php`
 
 ```php
 Route::post('/auth/login', '\PhpSoft\Illuminate\Users\Controllers\AuthController@login');
-Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
 Route::post('/register', '\PhpSoft\Illuminate\Users\Controllers\UserController@register');
-Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
+Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if use JSON Web Token
+    Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
+    Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
+});
 ```
 
 ### 3.2. Role-based Permissions
