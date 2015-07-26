@@ -19,7 +19,7 @@ class UserServiceProvider extends ServiceProvider
         ]);
 
         // Register commands
-        $this->commands('phpsoft.command.migration');
+        $this->commands('phpsoft.users.command.migration');
     }
 
     /**
@@ -29,7 +29,19 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerViewPath();
         $this->registerCommands();
+    }
+
+    /**
+     * Register view path
+     * 
+     * @return void
+     */
+    private function registerViewPath()
+    {
+        $app = app();
+        $app['view']->addLocation(__DIR__.'/../resources/views');
     }
 
     /**
@@ -39,7 +51,7 @@ class UserServiceProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        $this->app->bindShared('phpsoft.command.migration', function ($app) {
+        $this->app->bindShared('phpsoft.users.command.migration', function ($app) {
             return new MigrationCommand();
         });
     }
