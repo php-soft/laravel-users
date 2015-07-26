@@ -86,12 +86,24 @@ Remove middlewares in `app/Http/Kernel.php`
 * `\App\Http\Middleware\VerifyCsrfToken::class`
 
 Add route middlewares in `app/Http/Kernel.php`
+
 ```php
 protected $routeMiddleware = [
     // ...
     'jwt.auth' => \PhpSoft\Illuminate\Users\Middleware\Authenticate::class,
     'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
 ];
+```
+
+Add routes in `app/Http/routes.php`
+
+```php
+
+Route::post('/auth/login', '\PhpSoft\Illuminate\Users\Controllers\AuthController@login');
+Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
+Route::post('/register', '\PhpSoft\Illuminate\Users\Controllers\UserController@register');
+Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
+
 ```
 
 ### 3.2. Role-based Permissions
