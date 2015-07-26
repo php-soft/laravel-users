@@ -62,7 +62,7 @@ class Authenticate
             return $this->respond('tymon.jwt.invalid', 'Token is invalid.', $e->getStatusCode(), [$e]);
         }
 
-        if (! $user) {
+        if (!$user) {
             return $this->respond('tymon.jwt.user_not_found', 'User not found.', 404);
         }
 

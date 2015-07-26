@@ -14,9 +14,9 @@ class UserModuleSeeder extends Seeder
     {
         // create admin user
         $root = factory(App\User::class)->create([
-            'name' => 'Administrator',
-            'email' => 'admin@example.com',
-            'password' => bcrypt('123456'),
+            'name'      => 'Administrator',
+            'email'     => 'admin@example.com',
+            'password'  => bcrypt('123456'),
         ]);
 
         // create default roles
