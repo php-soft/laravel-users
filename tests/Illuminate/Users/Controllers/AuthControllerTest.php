@@ -59,6 +59,7 @@ class AuthControllerTest extends TestCase
         $this->assertEquals(204, $res->getStatusCode());
         $this->assertNull(Auth::user());
 
+        // check re-logout
         $res = $this->call('POST', '/auth/logout', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(401, $res->getStatusCode());
     }
