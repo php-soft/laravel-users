@@ -106,6 +106,21 @@ Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if 
 });
 ```
 
+Apache seems to discard the Authorization header if it is not a base64 encoded user/pass combo. So to fix this you can add the following to your apache config
+
+```
+RewriteEngine On
+
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+```
+
+Alternatively you can include the token via a query string
+
+```
+http://api.mysite.com/me?token={yourtokenhere}
+```
+
 ### 3.2. Role-based Permissions
 
 Use the `UserTrait` trait in your existing `App\User` model. For example:
