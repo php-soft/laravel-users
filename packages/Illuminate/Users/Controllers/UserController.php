@@ -28,12 +28,12 @@ class UserController extends Controller
     }
 
     /**
-     * Register action
+     * Create user action
      *
      * @param  Request $request
      * @return Response
      */
-    public function register(Request $request)
+    public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|max:255',

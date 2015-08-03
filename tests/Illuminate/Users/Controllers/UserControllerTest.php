@@ -33,7 +33,7 @@ class UserControllerTest extends TestCase
 
     public function testRegisterValidateFailure()
     {
-        $res = $this->call('POST', '/register');
+        $res = $this->call('POST', '/users');
         $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('error', $results->status);
@@ -45,7 +45,7 @@ class UserControllerTest extends TestCase
         $this->assertObjectHasAttribute('password', $results->errors);
         $this->assertEquals('The password field is required.', $results->errors->password[0]);
 
-        $res = $this->call('POST', '/register', [
+        $res = $this->call('POST', '/users', [
             'name'      => 'Fish Bone',
             'email'     => 'Invalid email',
             'password'  => '123',
@@ -60,7 +60,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('The password confirmation does not match.', $results->errors->password[0]);
         $this->assertEquals('The password must be at least 6 characters.', $results->errors->password[1]);
 
-        $res = $this->call('POST', '/register', [
+        $res = $this->call('POST', '/users', [
             'name'      => 'Fish Bone',
             'email'     => 'admin@example.com',
             'password'  => '123456',
@@ -76,7 +76,7 @@ class UserControllerTest extends TestCase
 
     public function testRegisterSuccess()
     {
-        $res = $this->call('POST', '/register', [
+        $res = $this->call('POST', '/users', [
             'name'      => 'Fish Bone',
             'email'     => 'fish@example.com',
             'password'  => '123456',
