@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::post('/auth/login', '\PhpSoft\Illuminate\Users\Controllers\AuthController@login');
-Route::post('/register', '\PhpSoft\Illuminate\Users\Controllers\UserController@register');
+Route::post('/users', '\PhpSoft\Illuminate\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'jwt.auth'], function() { 
     Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
     Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
