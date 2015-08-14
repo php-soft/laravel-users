@@ -62,7 +62,7 @@ this will generate a new random key, which will be used to sign your tokens.
 Now generate the migration:
 
 ```sh
-$ php artisan users:migrate
+$ php artisan ps-users:migrate
 ```
 
 It will generate the `<timestamp>_entrust_setup_tables.php` migration. You may now run it with the artisan migrate command:
