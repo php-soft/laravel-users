@@ -144,6 +144,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        PhpSoft\Illuminate\ArrayView\Providers\ArrayViewServiceProvider::class,
         PhpSoft\Illuminate\Users\Providers\UserServiceProvider::class,
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Zizaco\Entrust\EntrustServiceProvider::class,

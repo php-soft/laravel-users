@@ -3,6 +3,7 @@
 namespace PhpSoft\Illuminate\Users\Controllers;
 
 use Auth;
+use PhpSoft\Illuminate\ArrayView\Facades\ArrayView;
 use App\Http\Controllers\Controller as AppController;
 
 class Controller extends AppController
@@ -14,7 +15,7 @@ class Controller extends AppController
      */
     public function __construct()
     {
-        //
+        ArrayView::setViewPaths([ __DIR__ . '/../resources/views' ]);
     }
 
     /**

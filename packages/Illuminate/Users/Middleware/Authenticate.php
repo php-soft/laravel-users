@@ -9,6 +9,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Routing\ResponseFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use PhpSoft\Illuminate\ArrayView\Facades\ArrayView;
 
 class Authenticate
 {
@@ -82,6 +83,8 @@ class Authenticate
      */
     protected function respond($event, $error, $status, $payload = [])
     {
+        ArrayView::setViewPaths([ __DIR__ . '/../resources/views' ]);
+
         $response = $this->events->fire($event, $payload, true);
 
         return $response ?: $this->response->json(arrayView('errors/authenticate', ['error' => $error]), $status);

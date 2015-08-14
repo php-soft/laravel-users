@@ -29,19 +29,7 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerViewPath();
         $this->registerCommands();
-    }
-
-    /**
-     * Register view path
-     * 
-     * @return void
-     */
-    private function registerViewPath()
-    {
-        $app = app();
-        $app['view']->addLocation(__DIR__.'/../resources/views');
     }
 
     /**
