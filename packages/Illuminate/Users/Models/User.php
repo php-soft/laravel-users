@@ -41,4 +41,19 @@ class User extends Model
 
         return parent::create($attributes)->fresh();
     }
+
+    /**
+     * Change password
+     * 
+     * @param  array  $attributes
+     * @return User
+     */
+    public function changePassword($newPassword)
+    {
+        $user = $this;
+
+        $user['password'] = bcrypt($newPassword);
+
+        return $user->save();
+    }
 }
