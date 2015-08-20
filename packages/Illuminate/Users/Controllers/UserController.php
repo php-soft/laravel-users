@@ -18,7 +18,7 @@ class UserController extends Controller
     public function authenticated()
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401);
+            return response()->json(null, 401); // @codeCoverageIgnore
         }
 
         return response()->json(arrayView('user/read', [
@@ -62,7 +62,7 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401);
+            return response()->json(null, 401); // @codeCoverageIgnore
         }
 
         $validator = Validator::make($request->all(), [
@@ -77,7 +77,7 @@ class UserController extends Controller
         }
 
         $user = User::find(Auth::user()->id);
-        $checkPassword = Auth::attempt(['id' => $user['id'], 'password' => $request['old_password']]);
+        $checkPassword = Auth::attempt(['id' => $user->id, 'password' => $request['old_password']]);
         if (!$checkPassword) {
             return response()->json(arrayView('errors/validation', [
                 'errors' => ['Old password is incorrect.']
@@ -87,9 +87,9 @@ class UserController extends Controller
         $change = $user->changePassword($request['password']);
 
         if (!$change) {
-            return response()->json(null, 500);
+            return response()->json(null, 500); // @codeCoverageIgnore
         }
 
-        return response()->json(null, 204); 
+        return response()->json(null, 204);
     }
 }
