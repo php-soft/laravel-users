@@ -39,7 +39,7 @@ class UserServiceProvider extends ServiceProvider
      */
     private function registerCommands()
     {
-        $this->app->bindShared('phpsoft.users.command.migration', function ($app) {
+        $this->app->bindShared('phpsoft.users.command.migration', function () {
             return new MigrationCommand();
         });
     }
