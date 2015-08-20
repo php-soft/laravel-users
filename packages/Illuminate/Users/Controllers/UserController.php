@@ -76,7 +76,7 @@ class UserController extends Controller
             ]), 400);
         }
 
-        $user = User::find(Auth::user()->id);
+        $user = Auth::user();
         $checkPassword = Auth::attempt(['id' => $user->id, 'password' => $request['old_password']]);
         if (!$checkPassword) {
             return response()->json(arrayView('errors/validation', [
