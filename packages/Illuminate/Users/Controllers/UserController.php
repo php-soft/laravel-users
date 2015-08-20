@@ -19,7 +19,7 @@ class UserController extends Controller
     public function authenticated()
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401);
+            return response()->json(null, 401); // @codeCoverageIgnore
         }
 
         return response()->json(arrayView('user/read', [
@@ -62,11 +62,11 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401);
+            return response()->json(null, 401); // @codeCoverageIgnore
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'max:255', 
+            'name' => 'max:255',
         ]);
 
         if ($validator->fails()) {
@@ -88,7 +88,7 @@ class UserController extends Controller
         $updateProfile = $user->update($attributes);
 
         if (!$updateProfile) {
-            return response()->json(null, 500);
+            return response()->json(null, 500); // @codeCoverageIgnore
         }
 
         return response()->json(arrayView('user/read', [

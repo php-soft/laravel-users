@@ -124,6 +124,7 @@ class UserControllerTest extends TestCase
         $token = JWTAuth::attempt($credentials);
         $res = $this->call('PATCH', '/me/profile', [
             'name' => 'Steven Adam',
+            'email' => '',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $results = json_decode($res->getContent());
@@ -133,5 +134,6 @@ class UserControllerTest extends TestCase
         $userId = $results->entities[0]->id;
         $user = \App\User::find($userId);
         $this->assertEquals('Steven Adam', $user->name);
+        $this->assertEquals('admin@example.com', $user->email);
     }
 }
