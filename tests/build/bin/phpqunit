@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+./vendor/bin/phpunit --configuration ./tests/build/config/phpunit.quick.xml "$@"
+php ./tests/build/scripts/junit.php
