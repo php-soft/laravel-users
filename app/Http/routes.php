@@ -20,4 +20,5 @@ Route::post('/users', '\PhpSoft\Illuminate\Users\Controllers\UserController@crea
 Route::group(['middleware'=>'jwt.auth'], function() { 
     Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
     Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
+    Route::patch('/me/profile', '\PhpSoft\Illuminate\Users\Controllers\UserController@updateProfile');
 });

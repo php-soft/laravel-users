@@ -53,4 +53,46 @@ class UserController extends Controller
             'user' => $user
         ]), 201);
     }
+
+    /**
+     * update profile action
+     * @param  Request $request
+     * @return Response
+     */
+    public function updateProfile(Request $request)
+    {
+        if (!$this->checkAuth()) {
+            return response()->json(null, 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'max:255', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(arrayView('errors/validation', [
+                'errors' => $validator->errors()
+            ]), 400);
+        }
+
+        $attributes = $request->all();
+
+        foreach ($attributes as $attribute => $value) {
+            if ($value == null) {
+                unset($attributes[$attribute]);
+            }
+        }
+
+        $id = Auth::id();
+        $user = User::find($id);
+        $updateProfile = $user->update($attributes);
+
+        if (!$updateProfile) {
+            return response()->json(null, 500);
+        }
+
+        return response()->json(arrayView('user/read', [
+            'user' => User::find($id)
+        ]), 200);
+    }
 }
