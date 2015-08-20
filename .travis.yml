@@ -9,6 +9,9 @@ before_script:
 
 script:
   - vendor/bin/phpunit --configuration phpunit.xml
+  - php tests/build/scripts/junit.php
+  - . tests/build/bin/phpcs
+  - . tests/build/bin/phpmd
 
 notifications:
   on_success: always
