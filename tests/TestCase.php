@@ -26,7 +26,13 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
     public function setUp()
     {
         parent::setUp();
-        Artisan::call('migrate:refresh');
+        Artisan::call('migrate');
         Artisan::call('db:seed', [ '--class' => 'UserModuleSeeder' ]);
+    }
+
+    public function tearDown()
+    {
+        Artisan::call('migrate:reset');
+        parent::tearDown();
     }
 }

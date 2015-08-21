@@ -92,6 +92,22 @@ use PhpSoft\Illuminate\Users\Models\User as PhpSoftUser;
 class User extends PhpSoftUser implements AuthenticatableContract, CanResetPasswordContract
 {
     // ...
+
+    // You need allows fill attributes as follows
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'username',
+        'location',
+        'country',
+        'biography',
+        'occupation',
+        'website',
+        'image'
+    ];
+
+    // ...
 }
 ``` 
 
