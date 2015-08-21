@@ -81,6 +81,20 @@ $ php artisan db:seed --class=UserModuleSeeder
 
 ### 3.1. Authenticate with JSON Web Token
 
+You need to change class `App\User` to inherit from `PhpSoft\Illuminate\Users\Models\User` as follows:
+
+```php
+namespace App;
+
+// ...
+use PhpSoft\Illuminate\Users\Models\User as PhpSoftUser;
+
+class User extends PhpSoftUser implements AuthenticatableContract, CanResetPasswordContract
+{
+    // ...
+}
+``` 
+
 Remove middlewares in `app/Http/Kernel.php`
 
 * `\App\Http\Middleware\EncryptCookies::class`

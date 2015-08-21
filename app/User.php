@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use PhpSoft\Illuminate\Users\Models\User as PhpSoftUser;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+class User extends PhpSoftUser implements AuthenticatableContract, CanResetPasswordContract
 {
     use UserTrait, Authenticatable, CanResetPassword;
 
