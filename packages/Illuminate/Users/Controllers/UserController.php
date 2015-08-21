@@ -105,8 +105,18 @@ class UserController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'max:255',
+            'name'       => 'max:255',
+            'username'   => 'max:30',
+            'country'    => 'max:100',
+            'location'   => 'max:100',
+            'biography'  => 'max:255',
+            'occupation' => 'max:255',
+            'website'    => 'max:255',
+            'image'      => 'max:255',
+
         ]);
+        $attributesRules = $validator->getRules();
+        $attributesArray = array_keys($attributesRules);
 
         if ($validator->fails()) {
             return response()->json(arrayView('errors/validation', [
@@ -115,10 +125,10 @@ class UserController extends Controller
         }
 
         $attributes = $request->all();
-
-        foreach ($attributes as $attribute => $value) {
-            if ($value == null) {
-                unset($attributes[$attribute]);
+        $attributeKeys = array_keys($attributes);
+        foreach ($attributeKeys as $attributeKey) {
+            if (!in_array($attributeKey, $attributesArray)) {
+                return response()->json(null, 400);
             }
         }
 
@@ -131,7 +141,7 @@ class UserController extends Controller
         }
 
         return response()->json(arrayView('user/read', [
-            'user' => User::find($id)
+            'user' => $user
         ]), 200);
     }
 }

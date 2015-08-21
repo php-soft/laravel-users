@@ -107,15 +107,21 @@ class UserControllerTest extends TestCase
         // test invalid name
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
-        $name = str_repeat("abc", 100); 
+        $name = str_repeat("abc", 100);
         $res = $this->call('PATCH', '/me/profile', [
-           'name' => $name,
+           'name'     => $name,
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        
         $results = json_decode($res->getContent());
         $this->assertEquals('validation', $results->type);
         $this->assertEquals('error', $results->status);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
+        //test input invalid
+        $res = $this->call('PATCH', '/me/profile', [
+           'password' => '123456'
+        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(400, $res->getStatusCode());
     }
 
     public function testUpdateProfileSuccess()
@@ -123,8 +129,8 @@ class UserControllerTest extends TestCase
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $res = $this->call('PATCH', '/me/profile', [
-            'name' => 'Steven Adam',
-            'email' => '',
+            'name'    => 'Steven Adam',
+            'country' => 'USA',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $results = json_decode($res->getContent());
@@ -134,6 +140,7 @@ class UserControllerTest extends TestCase
         $userId = $results->entities[0]->id;
         $user = \App\User::find($userId);
         $this->assertEquals('Steven Adam', $user->name);
+        $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
     }
 
@@ -195,5 +202,5 @@ class UserControllerTest extends TestCase
             'password_confirmation' => '12345678'
         ], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(204, $res->getStatusCode());
-    }
+    } 
 }

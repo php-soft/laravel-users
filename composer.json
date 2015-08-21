@@ -19,7 +19,8 @@
         "laravel/framework": "5.1.*",
         "php-soft/laravel-array-view": "1.1.x",
         "tymon/jwt-auth": "0.5.*",
-        "zizaco/entrust": "dev-laravel-5"
+        "zizaco/entrust": "dev-laravel-5",
+        "doctrine/dbal": "^2.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
