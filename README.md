@@ -81,7 +81,7 @@ $ php artisan db:seed --class=UserModuleSeeder
 
 ### 3.1. Authenticate with JSON Web Token
 
-You have to edit `app\User.php` class extends `PhpSoft\Illuminate\Users\Models\User` class by following:
+You need to change class `App\User` to inherit from `PhpSoft\Illuminate\Users\Models\User` as follows:
 
 ```php
 namespace App;
