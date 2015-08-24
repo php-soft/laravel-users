@@ -29,9 +29,9 @@ class AuthController extends Controller
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(arrayView('errors/authenticate', [ // @codeCoverageIgnore
-            'error' => 'Could not create token.'
-            ]), 500); // @codeCoverageIgnore
+            return response()->json(arrayView('errors/authenticate', [
+                'error' => 'Could not create token.'
+            ]), 500);
         }
 
         // all good so return the token
