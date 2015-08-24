@@ -51,7 +51,7 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if (! $token = $this->auth->setRequest($request)->getToken()) {
+        if (!$token = $this->auth->setRequest($request)->getToken()) {
             return $this->respond('tymon.jwt.absent', 'Token is not provided.', 400);
         }
 

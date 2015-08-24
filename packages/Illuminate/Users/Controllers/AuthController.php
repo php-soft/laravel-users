@@ -29,7 +29,9 @@ class AuthController extends Controller
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(arrayView('errors/authenticate', ['error' => 'Could not create token.']), 500);
+            return response()->json(arrayView('errors/authenticate', [ // @codeCoverageIgnore
+            'error' => 'Could not create token.'
+            ]), 500); // @codeCoverageIgnore
         }
 
         // all good so return the token
@@ -44,7 +46,7 @@ class AuthController extends Controller
     public function logout()
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401);
+            return response()->json(null, 401); // @codeCoverageIgnore
         }
 
         Auth::logout();
