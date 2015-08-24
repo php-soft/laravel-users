@@ -92,4 +92,54 @@ class UserController extends Controller
 
         return response()->json(null, 204);
     }
+
+    /**
+     * update profile action
+     * @param  Request $request
+     * @return Response
+     */
+    public function updateProfile(Request $request)
+    {
+        if (!$this->checkAuth()) {
+            return response()->json(null, 401); // @codeCoverageIgnore
+        }
+        // validate data
+        $validator = Validator::make($request->all(), [
+            'name'       => 'max:255',
+            'username'   => 'max:30',
+            'country'    => 'max:100',
+            'location'   => 'max:100',
+            'biography'  => 'max:255',
+            'occupation' => 'max:255',
+            'website'    => 'max:255',
+            'image'      => 'max:255',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(arrayView('errors/validation', [
+                'errors' => $validator->errors()
+            ]), 400);
+        }
+
+        // check attribute invalid
+        $rules = $validator->getRules();
+        $ruleAttributes = array_keys($rules);
+        $requestAttributes = $request->all();
+        $requestAttributeKeys = array_keys($requestAttributes);
+        foreach ($requestAttributeKeys as $requestAttributeKey) {
+            if (!in_array($requestAttributeKey, $ruleAttributes)) {
+                return response()->json(null, 400);
+            }
+        }
+
+        // update profile
+        $user = Auth::user();
+        $updateProfile = $user->update($requestAttributes);
+        if (!$updateProfile) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
+
+        return response()->json(arrayView('user/read', [
+            'user' => $user
+        ]), 200);
+    }
 }

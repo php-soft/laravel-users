@@ -26,7 +26,18 @@ class User extends PhpSoftUser implements AuthenticatableContract, CanResetPassw
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'username',
+        'location',
+        'country',
+        'biography',
+        'occupation',
+        'website',
+        'image'
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.

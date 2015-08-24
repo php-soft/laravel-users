@@ -19,6 +19,13 @@ namespace {
                 'name'      => 'Administrator',
                 'email'     => 'admin@example.com',
                 'password'  => bcrypt('123456'),
+                'username'  => 'admin',
+                'location'  => 'Da Nang',
+                'country'   => 'Viet Nam',
+                'biography' => 'Dev',
+                'occupation'=> 'Dev',
+                'website'   => 'greenglobal.vn',
+                'image'     => 'avatar.jpg',
             ]);
 
             // create default roles

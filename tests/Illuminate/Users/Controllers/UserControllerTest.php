@@ -92,6 +92,58 @@ class UserControllerTest extends TestCase
         $this->assertEquals('fish@example.com', $user->email);
     }
 
+    public function testUpdateProfileFailure()
+    {
+        // test auth
+        $res = $this->call('PATCH', '/me/profile', [
+           'name' => 'Steven',
+        ]);
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals(400, $res->getStatusCode());
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('authenticate', $results->type);
+
+        // test invalid name
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $name = str_repeat("abc", 100);
+        $res = $this->call('PATCH', '/me/profile', [
+           'name'     => $name,
+        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        
+        $results = json_decode($res->getContent());
+        $this->assertEquals('validation', $results->type);
+        $this->assertEquals('error', $results->status);
+        $this->assertObjectHasAttribute('name', $results->errors);
+        $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
+        //test input invalid
+        $res = $this->call('PATCH', '/me/profile', [
+           'password' => '123456'
+        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(400, $res->getStatusCode());
+    }
+
+    public function testUpdateProfileSuccess()
+    {
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('PATCH', '/me/profile', [
+            'name'    => 'Steven Adam',
+            'country' => 'USA',
+        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals(200, $res->getStatusCode());
+        $this->assertEquals('admin@example.com', Auth::user()->email);
+        $this->assertEquals('Steven Adam', $results->entities[0]->name);
+        $userId = $results->entities[0]->id;
+        $user = \App\User::find($userId);
+        $this->assertEquals('Steven Adam', $user->name);
+        $this->assertEquals('USA', $user->country);
+        $this->assertEquals('admin@example.com', $user->email);
+    }
+
     public function testChangePassword()
     {
         // Check authenticate
@@ -150,5 +202,5 @@ class UserControllerTest extends TestCase
             'password_confirmation' => '12345678'
         ], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(204, $res->getStatusCode());
-    }
+    } 
 }
