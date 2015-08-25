@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSoft\Illuminate\Users\Controllers;
+namespace PhpSoft\Users\Controllers;
 
 use Auth;
 use PhpSoft\Illuminate\ArrayView\Facades\ArrayView;

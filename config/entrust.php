@@ -19,7 +19,7 @@ return [
     | the role if it is in a different namespace.
     |
     */
-    'role' => PhpSoft\Illuminate\Users\Models\Role::class,
+    'role' => PhpSoft\Users\Models\Role::class,
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ return [
     | Update the permission if it is in a different namespace.
     |
     */
-    'permission' => PhpSoft\Illuminate\Users\Models\Permission::class,
+    'permission' => PhpSoft\Users\Models\Permission::class,
 
     /*
     |--------------------------------------------------------------------------

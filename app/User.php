@@ -2,13 +2,13 @@
 
 namespace App;
 
-use PhpSoft\Illuminate\Users\Models\UserTrait;
+use PhpSoft\Users\Models\UserTrait;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use PhpSoft\Illuminate\Users\Models\User as PhpSoftUser;
+use PhpSoft\Users\Models\User as PhpSoftUser;
 
 class User extends PhpSoftUser implements AuthenticatableContract, CanResetPasswordContract
 {

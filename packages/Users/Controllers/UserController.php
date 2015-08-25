@@ -1,12 +1,12 @@
 <?php
 
-namespace PhpSoft\Illuminate\Users\Controllers;
+namespace PhpSoft\Users\Controllers;
 
 use Auth;
 use JWTAuth;
 use Validator;
 use Illuminate\Http\Request;
-use PhpSoft\Illuminate\Users\Models\User;
+use PhpSoft\Users\Models\User;
 
 class UserController extends Controller
 {

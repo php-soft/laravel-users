@@ -1,9 +1,9 @@
 <?php
 
-namespace PhpSoft\Illuminate\Users\Providers;
+namespace PhpSoft\Users\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use PhpSoft\Illuminate\Users\Commands\MigrationCommand;
+use PhpSoft\Users\Commands\MigrationCommand;
 
 class UserServiceProvider extends ServiceProvider
 {

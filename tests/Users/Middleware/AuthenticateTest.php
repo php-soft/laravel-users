@@ -1,6 +1,6 @@
 <?php 
 
-use PhpSoft\Illuminate\Users\Middleware\Authenticate;
+use PhpSoft\Users\Middleware\Authenticate;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthenticateTest extends TestCase

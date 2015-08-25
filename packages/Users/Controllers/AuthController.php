@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSoft\Illuminate\Users\Controllers;
+namespace PhpSoft\Users\Controllers;
 
 use Input;
 use Auth;

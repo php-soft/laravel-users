@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSoft\Illuminate\Users\Models;
+namespace PhpSoft\Users\Models;
 
 use Zizaco\Entrust\EntrustRole;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace PhpSoft\Illuminate\Users\Middleware;
+namespace PhpSoft\Users\Middleware;
 
 use Closure;
 use Tymon\JWTAuth\JWTAuth;

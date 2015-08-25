@@ -3,7 +3,7 @@
 namespace {
 
     use Illuminate\Database\Seeder;
-    use PhpSoft\Illuminate\Users\Models\Role;
+    use PhpSoft\Users\Models\Role;
 
     class UserModuleSeeder extends Seeder
     {

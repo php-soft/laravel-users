@@ -25,7 +25,7 @@ Once this has finished, you will need to add the service provider to the `provid
 'providers' => [
     // ...
     PhpSoft\Illuminate\ArrayView\Providers\ArrayViewServiceProvider::class,
-    PhpSoft\Illuminate\Users\Providers\UserServiceProvider::class,
+    PhpSoft\Users\Providers\UserServiceProvider::class,
     Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     Zizaco\Entrust\EntrustServiceProvider::class,
 ]
@@ -44,7 +44,7 @@ Next, also in the `app.php` config file, under the `aliases` array, you may want
 You will want to publish the config using the following command:
 
 ```sh
-$ php artisan vendor:publish --provider="PhpSoft\Illuminate\Users\Providers\UserServiceProvider"
+$ php artisan vendor:publish --provider="PhpSoft\Users\Providers\UserServiceProvider"
 ```
 
 ***Don't forget to set a secret key in the jwt config file!***
@@ -81,13 +81,13 @@ $ php artisan db:seed --class=UserModuleSeeder
 
 ### 3.1. Authenticate with JSON Web Token
 
-You need to change class `App\User` to inherit from `PhpSoft\Illuminate\Users\Models\User` as follows:
+You need to change class `App\User` to inherit from `PhpSoft\Users\Models\User` as follows:
 
 ```php
 namespace App;
 
 // ...
-use PhpSoft\Illuminate\Users\Models\User as PhpSoftUser;
+use PhpSoft\Users\Models\User as PhpSoftUser;
 
 class User extends PhpSoftUser implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -121,7 +121,7 @@ Add route middlewares in `app/Http/Kernel.php`
 ```php
 protected $routeMiddleware = [
     // ...
-    'jwt.auth' => \PhpSoft\Illuminate\Users\Middleware\Authenticate::class,
+    'jwt.auth' => \PhpSoft\Users\Middleware\Authenticate::class,
     'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
 ];
 ```
@@ -129,13 +129,13 @@ protected $routeMiddleware = [
 Add routes in `app/Http/routes.php`
 
 ```php
-Route::post('/auth/login', '\PhpSoft\Illuminate\Users\Controllers\AuthController@login');
-Route::post('/users', '\PhpSoft\Illuminate\Users\Controllers\UserController@create');
+Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
+Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if use JSON Web Token
-    Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
-    Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
-    Route::patch('/me/profile', '\PhpSoft\Illuminate\Users\Controllers\UserController@updateProfile');
-    Route::put('/me/password', '\PhpSoft\Illuminate\Users\Controllers\UserController@changePassword');
+    Route::post('/auth/logout', '\PhpSoft\Users\Controllers\AuthController@logout');
+    Route::get('/me', '\PhpSoft\Users\Controllers\UserController@authenticated');
+    Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
+    Route::put('/me/password', '\PhpSoft\Users\Controllers\UserController@changePassword');
 });
 ```
 
@@ -162,7 +162,7 @@ Use the `UserTrait` trait in your existing `App\User` model. For example:
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use PhpSoft\Illuminate\Users\Models\UserTrait;
+use PhpSoft\Users\Models\UserTrait;
 
 class User extends Model
 {

@@ -1,8 +1,8 @@
 <?php
 
-use PhpSoft\Illuminate\Users\Controllers\Controller;
-use PhpSoft\Illuminate\Users\Models\Permission;
-use PhpSoft\Illuminate\Users\Models\Role;
+use PhpSoft\Users\Controllers\Controller;
+use PhpSoft\Users\Models\Permission;
+use PhpSoft\Users\Models\Role;
 
 class ControllerTest extends TestCase 
 {

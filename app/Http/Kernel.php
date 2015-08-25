@@ -29,7 +29,7 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'jwt.auth' => \PhpSoft\Illuminate\Users\Middleware\Authenticate::class,
+        'jwt.auth' => \PhpSoft\Users\Middleware\Authenticate::class,
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
     ];
 }

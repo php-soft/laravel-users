@@ -32,10 +32,10 @@
     },
     "autoload": {
         "classmap": [
-            "packages/Illuminate/Users/database"
+            "packages/Users/database"
         ],
         "psr-4": {
-            "PhpSoft\\Illuminate\\Users\\": "packages/Illuminate/Users"
+            "PhpSoft\\Users\\": "packages/Users"
         }
     },
     "autoload-dev": {

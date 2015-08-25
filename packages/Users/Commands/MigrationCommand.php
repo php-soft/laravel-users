@@ -1,5 +1,5 @@
 <?php
-namespace PhpSoft\Illuminate\Users\Commands;
+namespace PhpSoft\Users\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
