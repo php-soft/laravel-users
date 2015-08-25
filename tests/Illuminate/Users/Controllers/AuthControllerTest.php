@@ -1,5 +1,8 @@
 <?php
 
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
 class AuthControllerTest extends TestCase
 {
     public function testLoginFailure()
@@ -33,6 +36,13 @@ class AuthControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
         $this->assertEquals('Invalid Credentials.', $results->message);
+
+        // can't create token
+        JWTAuth::shouldReceive('attempt')->once()->andThrow(new Tymon\JWTAuth\Exceptions\JWTException('Could not create token.', 500));
+        $res = $this->call('POST', '/auth/login');
+        $results = json_decode($res->getContent());
+        $this->assertEquals(500, $res->getStatusCode());
+        $this->assertEquals('Could not create token.', $results->message);
     }
 
     public function testLoginSuccess()
@@ -46,6 +56,13 @@ class AuthControllerTest extends TestCase
         $this->assertNotNull($results->entities[0]->token);
 
         $this->assertEquals('admin@example.com', Auth::user()->email);
+    }
+
+    public function testCheckAuthLogout()
+    {
+        $this->withoutMiddleware();
+        $res = $this->call('POST', '/auth/logout');
+        $this->assertEquals(401, $res->getStatusCode());
     }
 
     public function testLogout()

@@ -6,6 +6,7 @@ use Input;
 use Auth;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 /**
  * Authenticate
@@ -29,7 +30,9 @@ class AuthController extends Controller
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(arrayView('errors/authenticate', ['error' => 'Could not create token.']), 500);
+            return response()->json(arrayView('errors/authenticate', [
+                'error' => 'Could not create token.'
+            ]), 500);
         }
 
         // all good so return the token

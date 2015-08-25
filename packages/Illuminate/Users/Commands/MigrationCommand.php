@@ -1,10 +1,12 @@
 <?php
-
 namespace PhpSoft\Illuminate\Users\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * @codeCoverageIgnore
+ */
 class MigrationCommand extends Command
 {
     /**
