@@ -18,7 +18,7 @@ class UserController extends Controller
     public function authenticated()
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401); // @codeCoverageIgnore
+            return response()->json(null, 401);
         }
 
         return response()->json(arrayView('user/read', [
@@ -62,7 +62,7 @@ class UserController extends Controller
     public function changePassword(Request $request)
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401); // @codeCoverageIgnore
+            return response()->json(null, 401);
         }
 
         $validator = Validator::make($request->all(), [
@@ -101,7 +101,7 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401); // @codeCoverageIgnore
+            return response()->json(null, 401);
         }
         // validate data
         $validator = Validator::make($request->all(), [

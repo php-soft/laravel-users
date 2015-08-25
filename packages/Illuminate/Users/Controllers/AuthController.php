@@ -6,6 +6,7 @@ use Input;
 use Auth;
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Foundation\Testing\WithoutMiddleware;
 
 /**
  * Authenticate
@@ -46,7 +47,7 @@ class AuthController extends Controller
     public function logout()
     {
         if (!$this->checkAuth()) {
-            return response()->json(null, 401); // @codeCoverageIgnore
+            return response()->json(null, 401);
         }
 
         Auth::logout();

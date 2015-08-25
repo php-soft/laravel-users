@@ -10,6 +10,13 @@ class UserControllerTest extends TestCase
         $this->assertEquals('Token is not provided.', $results->message);
     }
 
+    public function testCheckAuthGetMe()
+    {
+        $this->withoutMiddleware();
+        $res = $this->call('GET', '/me');
+        $this->assertEquals(401, $res->getStatusCode());
+    }
+
     public function testGetAuthenticatedUser()
     {
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
@@ -92,6 +99,13 @@ class UserControllerTest extends TestCase
         $this->assertEquals('fish@example.com', $user->email);
     }
 
+    public function testCheckAuthUpdateProfile()
+    {
+        $this->withoutMiddleware();
+        $res = $this->call('PATCH', '/me/profile');
+        $this->assertEquals(401, $res->getStatusCode());
+    }
+
     public function testUpdateProfileFailure()
     {
         // test auth
@@ -142,6 +156,13 @@ class UserControllerTest extends TestCase
         $this->assertEquals('Steven Adam', $user->name);
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
+    }
+
+    public function testCheckAuthChangePassword()
+    {
+        $this->withoutMiddleware();
+        $res = $this->call('PUT', '/me/password');
+        $this->assertEquals(401, $res->getStatusCode());
     }
 
     public function testChangePassword()

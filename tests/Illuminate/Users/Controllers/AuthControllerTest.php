@@ -58,6 +58,13 @@ class AuthControllerTest extends TestCase
         $this->assertEquals('admin@example.com', Auth::user()->email);
     }
 
+    public function testCheckAuthLogout()
+    {
+        $this->withoutMiddleware();
+        $res = $this->call('POST', '/auth/logout');
+        $this->assertEquals(401, $res->getStatusCode());
+    }
+
     public function testLogout()
     {
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
