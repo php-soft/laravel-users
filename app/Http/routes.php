@@ -15,11 +15,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::post('/auth/login', '\PhpSoft\Illuminate\Users\Controllers\AuthController@login');
-Route::post('/users', '\PhpSoft\Illuminate\Users\Controllers\UserController@create');
+Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
+Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'jwt.auth'], function() { 
-    Route::post('/auth/logout', '\PhpSoft\Illuminate\Users\Controllers\AuthController@logout');
-    Route::get('/me', '\PhpSoft\Illuminate\Users\Controllers\UserController@authenticated');
-    Route::patch('/me/profile', '\PhpSoft\Illuminate\Users\Controllers\UserController@updateProfile');
-    Route::put('/me/password', '\PhpSoft\Illuminate\Users\Controllers\UserController@changePassword');
+    Route::post('/auth/logout', '\PhpSoft\Users\Controllers\AuthController@logout');
+    Route::get('/me', '\PhpSoft\Users\Controllers\UserController@authenticated');
+    Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
+    Route::put('/me/password', '\PhpSoft\Users\Controllers\UserController@changePassword');
 });

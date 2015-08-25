@@ -1,18 +1,12 @@
 <?php
 
-namespace App;
+namespace PhpSoft\Users\Models;
 
-use PhpSoft\Users\Models\UserTrait;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use PhpSoft\Users\Models\User as PhpSoftUser;
 
-class User extends PhpSoftUser implements AuthenticatableContract, CanResetPasswordContract
+class User extends Model
 {
-    use UserTrait, Authenticatable, CanResetPassword;
+    use UserTrait;
 
     /**
      * The database table used by the model.
@@ -45,4 +39,32 @@ class User extends PhpSoftUser implements AuthenticatableContract, CanResetPassw
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * Create user
+     * 
+     * @param  array  $attributes
+     * @return User
+     */
+    public static function create(array $attributes = [])
+    {
+        $attributes['password'] = bcrypt($attributes['password']);
+
+        return parent::create($attributes)->fresh();
+    }
+
+    /**
+     * Change password
+     * 
+     * @param  array  $attributes
+     * @return User
+     */
+    public function changePassword($newPassword)
+    {
+        $user = $this;
+
+        $user['password'] = bcrypt($newPassword);
+
+        return $user->save();
+    }
 }
