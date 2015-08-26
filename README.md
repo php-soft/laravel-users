@@ -24,7 +24,7 @@ Once this has finished, you will need to add the service provider to the `provid
 ```php
 'providers' => [
     // ...
-    PhpSoft\Illuminate\ArrayView\Providers\ArrayViewServiceProvider::class,
+    PhpSoft\ArrayView\Providers\ArrayViewServiceProvider::class,
     PhpSoft\Users\Providers\UserServiceProvider::class,
     Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
     Zizaco\Entrust\EntrustServiceProvider::class,
