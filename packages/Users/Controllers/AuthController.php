@@ -26,17 +26,17 @@ class AuthController extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(arrayView('errors/authenticate', ['error' => 'Invalid Credentials.']), 401);
+                return response()->json(arrayView('phpsoft.users::errors/authenticate', ['error' => 'Invalid Credentials.']), 401);
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
-            return response()->json(arrayView('errors/authenticate', [
+            return response()->json(arrayView('phpsoft.users::errors/authenticate', [
                 'error' => 'Could not create token.'
             ]), 500);
         }
 
         // all good so return the token
-        return response()->json(arrayView('tokens/show', compact('token')));
+        return response()->json(arrayView('phpsoft.users::tokens/show', compact('token')));
     }
 
     /**

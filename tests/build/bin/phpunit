@@ -1,3 +1,2 @@
 #!/usr/bin/env sh
 ./vendor/bin/phpunit --configuration phpunit.xml "$@"
-php ./tests/build/scripts/junit.php

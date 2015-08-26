@@ -83,10 +83,8 @@ class Authenticate
      */
     protected function respond($event, $error, $status, $payload = [])
     {
-        ArrayView::setViewPaths([ __DIR__ . '/../resources/views' ]);
-
         $response = $this->events->fire($event, $payload, true);
 
-        return $response ?: $this->response->json(arrayView('errors/authenticate', ['error' => $error]), $status);
+        return $response ?: $this->response->json(arrayView('phpsoft.users::errors/authenticate', ['error' => $error]), $status);
     }
 }

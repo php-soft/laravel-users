@@ -12,6 +12,14 @@ class UserServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Set views path
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'phpsoft.users');
+
+        // Publish views
+        $this->publishes([
+            __DIR__ . '/../resources/views' => base_path('resources/views/vendor/phpsoft.users'),
+        ]);
+
         // Publish config files
         $this->publishes([
             __DIR__ . '/../config/jwt.php' => config_path('jwt.php'),

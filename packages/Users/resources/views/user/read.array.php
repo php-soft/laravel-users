@@ -5,7 +5,8 @@ $this->set('links', '{}');
 $this->set('meta', '{}');
 
 $this->set('entities', $this->each([ $user ], function ($section, $user) {
-    $section->set($section->partial('partials/user', [ 'user' => $user ]));
+
+    $section->set($section->partial('phpsoft.users::partials/user', [ 'user' => $user ]));
 }));
 
 $this->set('linked', '{}');
