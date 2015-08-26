@@ -9,7 +9,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Routing\ResponseFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use PhpSoft\Illuminate\ArrayView\Facades\ArrayView;
+use PhpSoft\ArrayView\Facades\ArrayView;
 
 class Authenticate
 {
