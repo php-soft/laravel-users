@@ -9,16 +9,6 @@ use App\Http\Controllers\Controller as AppController;
 class Controller extends AppController
 {
     /**
-     * Instantiate a new Controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        ArrayView::setViewPaths([ __DIR__ . '/../resources/views' ]);
-    }
-
-    /**
      * Check authentication
      * 
      * @return boolean

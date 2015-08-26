@@ -21,7 +21,7 @@ class UserController extends Controller
             return response()->json(null, 401);
         }
 
-        return response()->json(arrayView('user/read', [
+        return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => Auth::user()
         ]), 200);
     }
@@ -41,14 +41,14 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(arrayView('errors/validation', [
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
                 'errors' => $validator->errors()
             ]), 400);
         }
 
         $user = User::create($request->all());
 
-        return response()->json(arrayView('user/read', [
+        return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
         ]), 201);
     }
@@ -71,7 +71,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(arrayView('errors/validation', [
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
                 'errors' => $validator->errors()
             ]), 400);
         }
@@ -79,7 +79,7 @@ class UserController extends Controller
         $user = Auth::user();
         $checkPassword = Auth::attempt(['id' => $user->id, 'password' => $request['old_password']]);
         if (!$checkPassword) {
-            return response()->json(arrayView('errors/validation', [
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
                 'errors' => ['Old password is incorrect.']
             ]), 401);
         }
@@ -115,7 +115,7 @@ class UserController extends Controller
             'image'      => 'max:255',
         ]);
         if ($validator->fails()) {
-            return response()->json(arrayView('errors/validation', [
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
                 'errors' => $validator->errors()
             ]), 400);
         }
@@ -138,7 +138,7 @@ class UserController extends Controller
             return response()->json(null, 500); // @codeCoverageIgnore
         }
 
-        return response()->json(arrayView('user/read', [
+        return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
         ]), 200);
     }
