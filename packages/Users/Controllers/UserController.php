@@ -102,4 +102,31 @@ class UserController extends Controller
             'user' => $user
         ]), 200);
     }
+    /**
+     * [delete user]
+     * @param  [int] $id [id user]
+     * @return Response
+     */
+    public function delete($id)
+    {
+        if (!$this->checkAuth()) {
+            return response()->json(null, 401);
+        }
+
+        // get user by id
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        // delete user
+        $deleteUser = $user->delete();
+
+        if (!$deleteUser) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
+        
+        return response()->json(null, 204);
+    }
 }
