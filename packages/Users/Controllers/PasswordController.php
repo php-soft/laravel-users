@@ -30,6 +30,7 @@ class PasswordController extends Controller
         }
 
         $response = Password::sendResetLink($request->only('email'), function (Message $message) {
+
             $message->subject($this->getEmailSubject());
         });
 
