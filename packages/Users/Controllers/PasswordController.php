@@ -82,7 +82,7 @@ class PasswordController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function changePassword(Request $request)
+    public function change(Request $request)
     {
         if (!$this->checkAuth()) {
             return response()->json(null, 401);
