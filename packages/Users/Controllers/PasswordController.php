@@ -2,7 +2,7 @@
 namespace PhpSoft\Users\Controllers;
 
 use Mail;
-use JWTAuth;
+use Auth;
 use Validator;
 use Illuminate\Mail\Message;
 use Illuminate\Http\Request;
@@ -16,6 +16,7 @@ class PasswordController extends Controller
 
     /**
      * Forgot password
+     * 
      * @param  Request $request 
      * @return json
      */
@@ -42,8 +43,8 @@ class PasswordController extends Controller
     }
 
     /**
-     *
      * Reset password
+     * 
      * @param  Request $request
      * @return json
      */
@@ -73,5 +74,45 @@ class PasswordController extends Controller
             default:
                 return response()->json(null, 400);
         }
+    }
+
+    /**
+     * Change password
+     *
+     * @param  Request $request
+     * @return Response
+     */
+    public function change(Request $request)
+    {
+        if (!$this->checkAuth()) {
+            return response()->json(null, 401);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|min:6',
+            'password'     => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
+                'errors' => $validator->errors()
+            ]), 400);
+        }
+
+        $user = Auth::user();
+        $checkPassword = Auth::attempt(['id' => $user->id, 'password' => $request['old_password']]);
+        if (!$checkPassword) {
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
+                'errors' => ['Old password is incorrect.']
+            ]), 401);
+        }
+
+        $change = $user->changePassword($request['password']);
+
+        if (!$change) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
+
+        return response()->json(null, 204);
     }
 }
