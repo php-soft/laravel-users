@@ -34,7 +34,7 @@ class PasswordController extends Controller
         });
 
         if ($response == Password::INVALID_USER) {
-            return response()->json('User is invalid', 400);
+            return response()->json('User is invalid.', 400);
         }
 
         return response()->json(null, 200);
@@ -61,8 +61,10 @@ class PasswordController extends Controller
         $credentials = $request->only('email', 'password', 'password_confirmation', 'token');
 
         $response = Password::reset($credentials, function ($user, $password) {
+
             $this->resetPassword($user, $password); // @codeCoverageIgnore
         });
+
         switch ($response) {
             case Password::PASSWORD_RESET:
                 return response()->json(null, 200);
