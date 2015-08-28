@@ -85,6 +85,8 @@ class Authenticate
     {
         $response = $this->events->fire($event, $payload, true);
 
-        return $response ?: $this->response->json(arrayView('phpsoft.users::errors/authenticate', ['error' => $error]), $status);
+        return $response ?: $this->response->json(arrayView('phpsoft.users::errors/authenticate', [
+            'error' => $error
+        ]), $status);
     }
 }

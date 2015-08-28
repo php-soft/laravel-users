@@ -23,3 +23,5 @@ Route::group(['middleware'=>'jwt.auth'], function() {
     Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
     Route::put('/me/password', '\PhpSoft\Users\Controllers\UserController@changePassword');
 });
+Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
+Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');

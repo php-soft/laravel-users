@@ -137,6 +137,8 @@ Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if 
     Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
     Route::put('/me/password', '\PhpSoft\Users\Controllers\UserController@changePassword');
 });
+Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
+Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
 ```
 
 Apache seems to discard the Authorization header if it is not a base64 encoded user/pass combo. So to fix this you can add the following to your apache config
@@ -212,4 +214,32 @@ Both `hasRole()` and `can()` can receive an array of roles & permissions to chec
 ```php
 $user->hasRole(['owner', 'admin']);       // true
 $user->can(['edit-user', 'create-post']); // true
+```
+
+### 3.3 Forgot password
+
+To send mail forgot password, 
+- You need to add address and name of sender in `config\mail.php` as follows:
+
+```php
+'from' => ['address' => 'no-reply@example.com', 'name' => 'System'],
+```
+
+- You need to create email view: 
+Create  `password.blade.php` file in folder `resources\views\emails` with contents as follows:
+
+```php
+<h3>You are receiving this e-mail because you requested resetting your password to domain.com</h3>
+Please click this URL to reset your password: <a href="http://domain.com/passwords/reset?token={{$token}}">http://domain.com/passwords/reset?token={{$token}}</a>
+```
+You can change contents of this view for your using.
+
+By other way, you can use other view and config `password.email` in `config\auth.php`:
+
+```php
+'password' => [
+        'email' => 'emails.password',
+        'table' => 'password_resets',
+        'expire' => 60,
+    ],
 ```
