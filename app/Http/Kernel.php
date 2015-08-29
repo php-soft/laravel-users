@@ -31,5 +31,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'jwt.auth' => \PhpSoft\Users\Middleware\Authenticate::class,
         'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
+        'permission' => \PhpSoft\Users\Middleware\Permission::class,
     ];
 }
