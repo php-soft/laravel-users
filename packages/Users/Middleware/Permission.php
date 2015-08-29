@@ -32,7 +32,7 @@ class Permission
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $permission='manage', $role = 'admin')
+    public function handle($request, Closure $next, $permission = 'manage', $role = 'admin')
     {
         if (($status = $this->checkPermission($permission, $role)) !== true) {
             return response()->json(null, $status);
