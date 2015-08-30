@@ -22,6 +22,12 @@ Route::post('/posts', [
     }
 ]);
 
+Route::group(['middleware'=>'routePermission'], function() { 
+    Route::post('/blog/{id}', function ($id) {
+        return response()->json(null, 200);
+    });
+});
+
 Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
 Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'jwt.auth'], function() { 

@@ -269,3 +269,39 @@ Route::post('/posts', [
     }
 ]);
 ```
+
+#### PhpSoft\Users\Middleware\RoutePermission
+
+This middleware is use to check permission for a route dynamic by database.
+
+Add route middlewares in app/Http/Kernel.php
+
+```php
+protected $routeMiddleware = [
+    // ...
+    'routePermission' => \PhpSoft\Users\Middleware\RoutePermission::class,
+];
+```
+
+Usage
+
+```php
+Route::group(['middleware'=>'routePermission'], function() { 
+    Route::post('/blog', function () {
+        //
+    });
+});
+```
+
+Require permission for a route as follows
+
+```php
+// require permissions
+PhpSoft\Users\Models\RoutePermission::setRoutePermissions('POST /blog', ['create-blog']);
+
+// require roles
+PhpSoft\Users\Models\RoutePermission::setRouteRoles('POST /blog', ['creator']);
+
+// require permissions or roles
+PhpSoft\Users\Models\RoutePermission::setRoutePermissionsRoles('POST /blog', ['create-blog'], ['creator']);
+```

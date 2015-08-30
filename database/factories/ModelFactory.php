@@ -19,3 +19,11 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(PhpSoft\Users\Models\RoutePermission::class, function (Faker\Generator $faker) {
+    return [
+        'route' => $faker->name,
+        'permissions' => '',
+        'roles' => '',
+    ];
+});
