@@ -157,4 +157,19 @@ class UserControllerTest extends TestCase
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
     }
+
+    public function testViewUser()
+    {
+        // test view user failure
+        $res = $this->call('GET', '/users/2');
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // test view user succsess
+        $res = $this->call('GET', '/users/1');
+        $results = json_decode($res->getContent());
+        $this->assertEquals(200, $res->getStatusCode());
+        $this->assertEquals('Administrator', $results->entities[0]->name);
+        $user = \App\User::find(1);
+        $this->assertEquals('admin', $user->username);
+    }
 }

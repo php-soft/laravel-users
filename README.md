@@ -139,6 +139,10 @@ Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if 
 });
 Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
+Route::group(['middleware'=>'routePermission'], function() {
+
+    Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
+});
 ```
 
 Apache seems to discard the Authorization header if it is not a base64 encoded user/pass combo. So to fix this you can add the following to your apache config

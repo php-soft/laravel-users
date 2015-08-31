@@ -91,11 +91,30 @@ class UserController extends Controller
             }
         }
 
-        // update profile
+        // Update profile
         $user = Auth::user();
         $updateProfile = $user->update($requestAttributes);
         if (!$updateProfile) {
             return response()->json(null, 500); // @codeCoverageIgnore
+        }
+
+        return response()->json(arrayView('phpsoft.users::user/read', [
+            'user' => $user
+        ]), 200);
+    }
+
+    /**
+     * View user
+     * @param  int $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        // get user by id
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
         }
 
         return response()->json(arrayView('phpsoft.users::user/read', [
