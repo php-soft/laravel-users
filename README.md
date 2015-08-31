@@ -136,6 +136,7 @@ Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if 
     Route::get('/me', '\PhpSoft\Users\Controllers\UserController@authenticated');
     Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
     Route::put('/me/password', '\PhpSoft\Users\Controllers\PasswordController@change');
+    Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@delete');
 });
 Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
