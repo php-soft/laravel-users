@@ -63,6 +63,7 @@ class UserController extends Controller
         if (!$this->checkAuth()) {
             return response()->json(null, 401);
         }
+
         // validate data
         $validator = Validator::make($request->all(), [
             'name'       => 'max:255',
@@ -74,6 +75,7 @@ class UserController extends Controller
             'website'    => 'max:255',
             'image'      => 'max:255',
         ]);
+
         if ($validator->fails()) {
             return response()->json(arrayView('phpsoft.users::errors/validation', [
                 'errors' => $validator->errors()
@@ -85,6 +87,7 @@ class UserController extends Controller
         $ruleAttributes = array_keys($rules);
         $requestAttributes = $request->all();
         $requestAttributeKeys = array_keys($requestAttributes);
+
         foreach ($requestAttributeKeys as $requestAttributeKey) {
             if (!in_array($requestAttributeKey, $ruleAttributes)) {
                 return response()->json(null, 400);
@@ -94,6 +97,7 @@ class UserController extends Controller
         // Update profile
         $user = Auth::user();
         $updateProfile = $user->update($requestAttributes);
+        
         if (!$updateProfile) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
@@ -108,12 +112,8 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
-    public function delete($id)
+    public function destroy($id)
     {
-        if (!$this->checkAuth()) {
-            return response()->json(null, 401);
-        }
-
         // get user by id
         $user = User::find($id);
 

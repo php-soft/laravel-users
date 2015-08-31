@@ -158,14 +158,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('admin@example.com', $user->email);
     }
 
-    public function testCheckAuthDeleteUser()
-    {
-        $this->withoutMiddleware();
-        $res = $this->call('DELETE', '/users/3');
-        $this->assertEquals(401, $res->getStatusCode());
-    }
-
-    public function testDeleteUser()
+    public function testDestroyUser()
     {
         // test delete user failure
         // test auth
