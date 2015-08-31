@@ -238,9 +238,71 @@ You can change contents of this view for your using.
 By other way, you can use other view and config `password.email` in `config\auth.php`:
 
 ```php
-'password' => [
+    'password' => [
         'email' => 'emails.password',
         'table' => 'password_resets',
         'expire' => 60,
     ],
+```
+
+### 3.4 Middlewares
+
+#### PhpSoft\Users\Middleware\Permission
+
+This middleware is use to check permission for an action.
+
+Add route middlewares in app/Http/Kernel.php
+
+```php
+protected $routeMiddleware = [
+    // ...
+    'permission' => \PhpSoft\Users\Middleware\Permission::class,
+];
+```
+
+Usage
+
+```php
+Route::post('/posts', [
+    'middleware' => 'permission:create-post', // Only allows user have create-post permission (or have admin role) access to this route
+    function () {
+        // ...
+    }
+]);
+```
+
+#### PhpSoft\Users\Middleware\RoutePermission
+
+This middleware is use to check permission for a route dynamic by database.
+
+Add route middlewares in app/Http/Kernel.php
+
+```php
+protected $routeMiddleware = [
+    // ...
+    'routePermission' => \PhpSoft\Users\Middleware\RoutePermission::class,
+];
+```
+
+Usage
+
+```php
+Route::group(['middleware'=>'routePermission'], function() { 
+    Route::post('/blog', function () {
+        //
+    });
+});
+```
+
+Require permission for a route as follows
+
+```php
+// require permissions
+PhpSoft\Users\Models\RoutePermission::setRoutePermissions('POST /blog', ['create-blog']);
+
+// require roles
+PhpSoft\Users\Models\RoutePermission::setRouteRoles('POST /blog', ['creator']);
+
+// require permissions or roles
+PhpSoft\Users\Models\RoutePermission::setRoutePermissionsRoles('POST /blog', ['create-blog'], ['creator']);
 ```
