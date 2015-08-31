@@ -91,7 +91,7 @@ class UserController extends Controller
             }
         }
 
-        // update profile
+        // Update profile
         $user = Auth::user();
         $updateProfile = $user->update($requestAttributes);
         if (!$updateProfile) {
@@ -102,9 +102,10 @@ class UserController extends Controller
             'user' => $user
         ]), 200);
     }
+
     /**
-     * [delete user]
-     * @param  [int] $id [id user]
+     * Delete user
+     * @param int $id
      * @return Response
      */
     public function delete($id)
