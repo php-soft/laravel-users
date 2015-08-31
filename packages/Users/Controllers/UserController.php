@@ -54,7 +54,7 @@ class UserController extends Controller
     }
 
     /**
-     * update profile action
+     * Update profile action
      * @param  Request $request
      * @return Response
      */
