@@ -27,7 +27,6 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::post('/blog/{id}', function ($id) {
         return response()->json(null, 200);
     });
-    Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
 });
 
 Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
