@@ -54,7 +54,7 @@ class UserController extends Controller
     }
 
     /**
-     * update profile action
+     * Update profile action
      * @param  Request $request
      * @return Response
      */
@@ -102,9 +102,10 @@ class UserController extends Controller
             'user' => $user
         ]), 200);
     }
+
     /**
-     * [delete user]
-     * @param  [int] $id [id user]
+     * Delete user
+     * @param int $id
      * @return Response
      */
     public function delete($id)
