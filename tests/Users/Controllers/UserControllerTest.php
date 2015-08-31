@@ -157,4 +157,96 @@ class UserControllerTest extends TestCase
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
     }
+
+    public function testBrowseNotFound()
+    {
+        $res = $this->call('GET', '/users');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+    }
+
+    public function testBrowseFound()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        $res = $this->call('GET', '/users');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($users)+1, count($results->entities));
+        for ($i = 0; $i < 10; ++$i) {
+            $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+        }
+    }
+
+    public function testBrowseWithScroll()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        // 5 items first
+        $res = $this->call('GET', '/users?limit=5');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // 5 items next
+        $nextLink = $results->links->next->href;
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[4 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // over list
+        $nextLink = $results->links->next->href;
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+    }
+
+    public function testBrowseWithPagination()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        // 5 items first
+        $res = $this->call('GET', '/users?limit=5');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // 5 items next
+        $nextLink = '/users?limit=5&page=2';
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[4 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // over list
+        $nextLink = '/users?limit=5&page=3';
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+    }
 }

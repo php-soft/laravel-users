@@ -2,11 +2,15 @@
 
 namespace PhpSoft\Users\Controllers;
 
+use Input;
 use Auth;
 use JWTAuth;
 use Validator;
+use App\User as UserApp;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\User;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserController extends Controller
 {
@@ -100,6 +104,24 @@ class UserController extends Controller
 
         return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
+        ]), 200);
+    }
+
+    /**
+     * index
+     * @return json
+     */
+    public function index()
+    {
+        $users = UserApp::browse([
+            'order'     => [ 'id' => 'desc' ],
+            'limit'     => ($limit = (int)Input::get('limit', 25)),
+            'cursor'    => Input::get('cursor'),
+            'offset'    => (Input::get('page', 1) - 1) * $limit,
+        ]);
+
+        return response()->json(arrayView('phpsoft.users::user/browse', [
+            'users' => $users,
         ]), 200);
     }
 }
