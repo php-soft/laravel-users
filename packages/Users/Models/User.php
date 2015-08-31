@@ -33,6 +33,12 @@ class User extends Model
         'image'
     ];
 
+    public static $filters = [
+        'name',
+        'email',
+        'username'
+    ];
+
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -61,11 +67,11 @@ class User extends Model
      */
     public function changePassword($newPassword)
     {
-        $user = $this;
+        $user = $this; // @codeCoverageIgnore
 
-        $user['password'] = bcrypt($newPassword);
+        $user['password'] = bcrypt($newPassword); // @codeCoverageIgnore
 
-        return $user->save();
+        return $user->save(); // @codeCoverageIgnore
     }
 
     /**
@@ -75,7 +81,20 @@ class User extends Model
      */
     public static function browse($options = [])
     {
+        $className = get_called_class();
+        $filters = $className::$filters;
+
         $find = parent::select('*');
+
+        if (!empty($options['filters'])) {
+            $inFilters = array_intersect($filters, array_keys($options['filters']));
+
+            if (!empty($inFilters)) {
+                foreach ($inFilters as $key) {
+                    $find = $find->where($key, 'LIKE', '%'. $options['filters'][$key] .'%');
+                }
+            }
+        }
 
         if (!empty($options['order'])) {
             foreach ($options['order'] as $field => $direction) {

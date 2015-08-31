@@ -111,13 +111,16 @@ class UserController extends Controller
      * index
      * @return json
      */
-    public function index()
+    public function index(Request $request)
     {
+        $arrayRequest = $request->all();
+
         $users = UserApp::browse([
             'order'     => [ 'id' => 'desc' ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),
             'offset'    => (Input::get('page', 1) - 1) * $limit,
+            'filters'   => $arrayRequest
         ]);
 
         return response()->json(arrayView('phpsoft.users::user/browse', [

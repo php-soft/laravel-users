@@ -166,6 +166,23 @@ class UserControllerTest extends TestCase
         $this->assertEquals(1, count($results->entities));
     }
 
+    public function testBrowseFilter()
+    {
+        // check list users with filter 
+
+        // check with right params request
+        $res = $this->call('GET', '/users?name=Administrator&email=admin@example.com');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+
+        // check with wrong params request
+        $res = $this->call('GET', '/users?name=user&email=admin@example.com');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(0, count($results->entities));
+    }
+
     public function testBrowseFound()
     {
         $users = [];
