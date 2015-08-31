@@ -158,6 +158,40 @@ class UserControllerTest extends TestCase
         $this->assertEquals('admin@example.com', $user->email);
     }
 
+    public function testDestroyUser()
+    {
+        // test delete user failure
+        // test invalid user 
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('DELETE', '/users/3', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // test delete user success
+        $res = $this->call('DELETE', '/users/1', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(204, $res->getStatusCode());
+        $user = \App\User::find(1);
+        $this->assertNull($user);
+    }
+
+    public function testViewUser()
+    {
+        // test view user failure
+        $res = $this->call('GET', '/users/2');
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // test view user succsess
+        $res = $this->call('GET', '/users/1');
+        $results = json_decode($res->getContent());
+        $this->assertEquals(200, $res->getStatusCode());
+        $user = \App\User::find(1);
+        $this->assertEquals($user->name, $results->entities[0]->name);
+        $this->assertEquals($user->username, $results->entities[0]->username);
+        $this->assertEquals($user->id, $results->entities[0]->id);
+        $this->assertEquals($user->website, $results->entities[0]->website);
+
+    }
+
     public function testBrowseNotFound()
     {
         $res = $this->call('GET', '/users');
