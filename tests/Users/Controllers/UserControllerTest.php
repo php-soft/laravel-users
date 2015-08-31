@@ -157,4 +157,28 @@ class UserControllerTest extends TestCase
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
     }
+
+    public function testDestroyUser()
+    {
+        // test delete user failure
+        // test auth
+        $res = $this->call('DELETE', '/users/3', []);
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('authenticate', $results->type);
+        $this->assertEquals('Token is not provided.', $results->message);
+        
+        // test invalid user 
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('DELETE', '/users/3', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // test delete user success
+        $res = $this->call('DELETE', '/users/1', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(204, $res->getStatusCode());
+        $user = \App\User::find(1);
+        $this->assertNull($user);
+    }
 }
