@@ -22,7 +22,8 @@ Route::post('/posts', [
     }
 ]);
 
-Route::group(['middleware'=>'routePermission'], function() { 
+Route::group(['middleware'=>'routePermission'], function() {
+
     Route::post('/blog/{id}', function ($id) {
         return response()->json(null, 200);
     });
@@ -30,12 +31,19 @@ Route::group(['middleware'=>'routePermission'], function() {
 
 Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
 Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
-Route::group(['middleware'=>'jwt.auth'], function() { 
+Route::group(['middleware'=>'jwt.auth'], function() {
+
     Route::post('/auth/logout', '\PhpSoft\Users\Controllers\AuthController@logout');
     Route::get('/me', '\PhpSoft\Users\Controllers\UserController@authenticated');
     Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
     Route::put('/me/password', '\PhpSoft\Users\Controllers\PasswordController@change');
-    Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
+
 });
 Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
+Route::group(['middleware'=>'routePermission'], function() {
+
+    Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
+    Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
+
+});

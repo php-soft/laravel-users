@@ -130,4 +130,23 @@ class UserController extends Controller
         
         return response()->json(null, 204);
     }
+
+    /**
+     * View user
+     * @param  int $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        // get user by id
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        return response()->json(arrayView('phpsoft.users::user/read', [
+            'user' => $user
+        ]), 200);
+    }
 }
