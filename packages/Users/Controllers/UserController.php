@@ -6,7 +6,7 @@ use Input;
 use Auth;
 use JWTAuth;
 use Validator;
-use App\User as UserApp;
+use App\User as AppUser;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\User;
 use Illuminate\Pagination\Paginator;
@@ -162,7 +162,7 @@ class UserController extends Controller
     {
         $arrayRequest = $request->all();
 
-        $users = UserApp::browse([
+        $users = AppUser::browse([
             'order'     => [ 'id' => 'desc' ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),

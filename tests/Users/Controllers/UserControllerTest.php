@@ -194,10 +194,11 @@ class UserControllerTest extends TestCase
 
     public function testBrowseNotFound()
     {
+        $removeAllUsers = App\User::truncate();
         $res = $this->call('GET', '/users');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals(1, count($results->entities));
+        $this->assertEquals(0, count($results->entities));
     }
 
     public function testBrowseFilter()
@@ -215,6 +216,18 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals(0, count($results->entities));
+
+        // check with params not in filter
+        $removeAllUsers = App\User::truncate();
+
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        $res = $this->call('GET', '/users?password=password');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($users), count($results->entities));
     }
 
     public function testBrowseFound()
