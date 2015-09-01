@@ -8,6 +8,9 @@ class User extends Model
 {
     use UserTrait;
 
+    const STATUS_ACTIVE_EMAIL = 1;
+    const STATUS_BLOCK        = 2;
+
     /**
      * The database table used by the model.
      *
@@ -120,5 +123,71 @@ class User extends Model
             'limit'  => empty($options['limit']) ? 0 : $options['limit'],
             'data'   => $find->get(),
         ];
+    }
+
+    /**
+     * set status is active email
+     * 
+     * @param  int $status
+     * @return int
+     */
+    public function activeEmail($status)
+    {
+        return $status | User::STATUS_ACTIVE_EMAIL;
+    }
+
+    /**
+     * set status is block
+     * 
+     * @param  int $status
+     * @return int
+     */
+    public function block($status)
+    {
+        return $status | User::STATUS_BLOCK;
+    }
+
+    /**
+     * set status is non active email
+     * 
+     * @param  int $status
+     * @return int
+     */
+    public function nonActiveEmail($status)
+    {
+        return $status & ~User::STATUS_ACTIVE_EMAIL;
+    }
+
+    /**
+     * set status is non block
+     * 
+     * @param  int $status
+     * @return int
+     */
+    public function nonBlock($status)
+    {
+        return $status & ~User::STATUS_BLOCK;
+    }
+
+    /**
+     * check status is active email
+     * 
+     * @param  int  $status
+     * @return boolean
+     */
+    public function isActiveEmail($status)
+    {
+        return (User::STATUS_ACTIVE_EMAIL)==($status & User::STATUS_ACTIVE_EMAIL);
+    }
+
+    /**
+     * check status is block
+     * 
+     * @param  int  $status
+     * @return boolean
+     */
+    public function isBlock($status)
+    {
+        return (User::STATUS_BLOCK)==($status & User::STATUS_BLOCK);
     }
 }
