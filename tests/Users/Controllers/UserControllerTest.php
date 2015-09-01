@@ -136,6 +136,9 @@ class UserControllerTest extends TestCase
            'password' => '123456'
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(400, $res->getStatusCode());
+        // test update user by id
+        $res = $this->call('PATCH', '/users/12/profile');
+        $this->assertEquals(404, $res->getStatusCode());
     }
 
     public function testUpdateProfileSuccess()
@@ -156,6 +159,17 @@ class UserControllerTest extends TestCase
         $this->assertEquals('Steven Adam', $user->name);
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
+
+        // test update user by id
+        $res = $this->call('PATCH', '/users/1/profile', [
+            'name'    => 'timcook',
+            'country' => 'UK',
+        ]);
+
+        $this->assertEquals(200, $res->getStatusCode());
+        $user = \App\User::find(1);
+        $this->assertEquals('timcook', $user->name);
+        $this->assertEquals('UK', $user->country);
     }
 
     public function testDestroyUser()

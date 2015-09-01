@@ -60,7 +60,7 @@ class UserController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function updateProfile(Request $request)
+    public function update(Request $request, $id = null)
     {
         if (!$this->checkAuth()) {
             return response()->json(null, 401);
@@ -96,8 +96,14 @@ class UserController extends Controller
             }
         }
 
+        // check user
+        !$id ? $user = Auth::user() : $user = User::find($id);
+
         // Update profile
-        $user = Auth::user();
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
         $updateProfile = $user->update($requestAttributes);
         
         if (!$updateProfile) {
