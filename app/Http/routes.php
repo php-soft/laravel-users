@@ -47,4 +47,7 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
+
+    Route::get('/users/{id}/block', '\PhpSoft\Users\Controllers\UserController@blockUser');
+    Route::get('/users/{id}/unblock', '\PhpSoft\Users\Controllers\UserController@unBlockUser');
 });

@@ -131,9 +131,10 @@ class User extends Model
      * @param  int $status
      * @return int
      */
-    public function activeEmail($status)
+    public function activeEmail()
     {
-        return $status | User::STATUS_ACTIVE_EMAIL;
+        $this->status = $this->status | User::STATUS_ACTIVE_EMAIL;
+        return $this->save();
     }
 
     /**
@@ -142,9 +143,10 @@ class User extends Model
      * @param  int $status
      * @return int
      */
-    public function block($status)
+    public function block()
     {
-        return $status | User::STATUS_BLOCK;
+        $this->status = $this->status | User::STATUS_BLOCK;
+        return $this->save();
     }
 
     /**
@@ -153,9 +155,10 @@ class User extends Model
      * @param  int $status
      * @return int
      */
-    public function nonActiveEmail($status)
+    public function unActiveEmail()
     {
-        return $status & ~User::STATUS_ACTIVE_EMAIL;
+        $this->status = $this->status & ~User::STATUS_ACTIVE_EMAIL;
+        return $this->save();
     }
 
     /**
@@ -164,9 +167,10 @@ class User extends Model
      * @param  int $status
      * @return int
      */
-    public function nonBlock($status)
+    public function unBlock()
     {
-        return $status & ~User::STATUS_BLOCK;
+        $this->status = $this->status & ~User::STATUS_BLOCK;
+        return $this->save();
     }
 
     /**
@@ -175,9 +179,9 @@ class User extends Model
      * @param  int  $status
      * @return boolean
      */
-    public function isActiveEmail($status)
+    public function isActiveEmail()
     {
-        return (User::STATUS_ACTIVE_EMAIL)==($status & User::STATUS_ACTIVE_EMAIL);
+        return ($this->status)==($this->status & User::STATUS_ACTIVE_EMAIL);
     }
 
     /**
@@ -186,8 +190,8 @@ class User extends Model
      * @param  int  $status
      * @return boolean
      */
-    public function isBlock($status)
+    public function isBlock()
     {
-        return (User::STATUS_BLOCK)==($status & User::STATUS_BLOCK);
+        return ($this->status)==($this->status & User::STATUS_BLOCK);
     }
 }
