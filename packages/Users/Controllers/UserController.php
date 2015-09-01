@@ -2,9 +2,11 @@
 
 namespace PhpSoft\Users\Controllers;
 
+use Input;
 use Auth;
 use JWTAuth;
 use Validator;
+use App\User as AppUser;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\User;
 
@@ -147,6 +149,25 @@ class UserController extends Controller
 
         return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
+        ]), 200);
+    }
+
+    /**
+     * index
+     * @return json
+     */
+    public function index(Request $request)
+    {
+        $users = AppUser::browse([
+            'order'     => [ 'id' => 'desc' ],
+            'limit'     => ($limit = (int)Input::get('limit', 25)),
+            'cursor'    => Input::get('cursor'),
+            'offset'    => (Input::get('page', 1) - 1) * $limit,
+            'filters'   => $request->all()
+        ]);
+
+        return response()->json(arrayView('phpsoft.users::user/browse', [
+            'users' => $users,
         ]), 200);
     }
 }

@@ -39,11 +39,12 @@ Route::group(['middleware'=>'jwt.auth'], function() {
     Route::put('/me/password', '\PhpSoft\Users\Controllers\PasswordController@change');
 
 });
+
 Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
 Route::group(['middleware'=>'routePermission'], function() {
 
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
+    Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
-
 });

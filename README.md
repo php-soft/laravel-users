@@ -142,6 +142,7 @@ Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
 Route::group(['middleware'=>'routePermission'], function() {
 
+    Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
 });
