@@ -126,18 +126,6 @@ class User extends Model
     }
 
     /**
-     * set status is active email
-     * 
-     * @param  int $status
-     * @return int
-     */
-    public function activeEmail()
-    {
-        $this->status = $this->status | User::STATUS_ACTIVE_EMAIL;
-        return $this->save();
-    }
-
-    /**
      * set status is block
      * 
      * @param  int $status
@@ -146,18 +134,6 @@ class User extends Model
     public function block()
     {
         $this->status = $this->status | User::STATUS_BLOCK;
-        return $this->save();
-    }
-
-    /**
-     * set status is non active email
-     * 
-     * @param  int $status
-     * @return int
-     */
-    public function unActiveEmail()
-    {
-        $this->status = $this->status & ~User::STATUS_ACTIVE_EMAIL;
         return $this->save();
     }
 
@@ -171,17 +147,6 @@ class User extends Model
     {
         $this->status = $this->status & ~User::STATUS_BLOCK;
         return $this->save();
-    }
-
-    /**
-     * check status is active email
-     * 
-     * @param  int  $status
-     * @return boolean
-     */
-    public function isActiveEmail()
-    {
-        return ($this->status)==($this->status & User::STATUS_ACTIVE_EMAIL);
     }
 
     /**
