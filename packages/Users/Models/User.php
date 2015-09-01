@@ -67,11 +67,10 @@ class User extends Model
      */
     public function changePassword($newPassword)
     {
-        $user = $this; // @codeCoverageIgnore
+        $user = $this;
+        $user['password'] = bcrypt($newPassword);
 
-        $user['password'] = bcrypt($newPassword); // @codeCoverageIgnore
-
-        return $user->save(); // @codeCoverageIgnore
+        return $user->save();
     }
 
     /**
@@ -81,12 +80,11 @@ class User extends Model
      */
     public static function browse($options = [])
     {
-        $className = get_called_class();
-        $filters = $className::$filters;
-
         $find = parent::select('*');
 
         if (!empty($options['filters'])) {
+            $className = get_called_class();
+            $filters = $className::$filters;
             $inFilters = array_intersect($filters, array_keys($options['filters']));
 
             if (!empty($inFilters)) {

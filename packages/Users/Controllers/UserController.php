@@ -9,8 +9,6 @@ use Validator;
 use App\User as AppUser;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\User;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserController extends Controller
 {
@@ -160,14 +158,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $arrayRequest = $request->all();
-
         $users = AppUser::browse([
             'order'     => [ 'id' => 'desc' ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),
             'offset'    => (Input::get('page', 1) - 1) * $limit,
-            'filters'   => $arrayRequest
+            'filters'   => $request->all()
         ]);
 
         return response()->json(arrayView('phpsoft.users::user/browse', [

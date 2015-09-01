@@ -201,9 +201,9 @@ class UserControllerTest extends TestCase
         $this->assertEquals(0, count($results->entities));
     }
 
-    public function testBrowseFilter()
+    public function testBrowseFilters()
     {
-        // check list users with filter 
+        // check list users with filters 
 
         // check with right params request
         $res = $this->call('GET', '/users?name=Administrator&email=admin@example.com');
@@ -217,7 +217,7 @@ class UserControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals(0, count($results->entities));
 
-        // check with params not in filter
+        // check with params not in filters
         $removeAllUsers = App\User::truncate();
 
         for ($i = 0; $i < 10; ++$i) {
