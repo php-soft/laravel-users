@@ -97,7 +97,7 @@ class UserController extends Controller
         }
 
         // check user
-        !$id ? $user = Auth::user() : $user = User::find($id);
+        $user = $id ? User::find($id) :  Auth::user();
 
         // Update profile
         if (!$user) {
