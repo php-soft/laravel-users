@@ -131,11 +131,13 @@ class UserControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
+
         //test input invalid
         $res = $this->call('PATCH', '/me/profile', [
            'password' => '123456'
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(400, $res->getStatusCode());
+
         // test update user by id
         $res = $this->call('PATCH', '/users/12/profile');
         $this->assertEquals(404, $res->getStatusCode());
