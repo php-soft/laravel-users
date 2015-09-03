@@ -85,9 +85,9 @@ class UserController extends Controller
         }
 
         // check attribute invalid
+        $ruleValidators = $validator->getRules();
         $requestAttributes = $request->all();
-        $requestAttributeKeys = array_keys($requestAttributes);
-        $validatorErrors = $this->validateInput($validator, $requestAttributeKeys);
+        $validatorErrors = $this->validateInput($ruleValidators, $requestAttributes);
 
         if ($validatorErrors) {
             return response()->json(arrayView('phpsoft.users::errors/validation', [

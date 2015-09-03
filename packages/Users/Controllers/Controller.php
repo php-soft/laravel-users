@@ -29,19 +29,19 @@ class Controller extends AppController
     }
     /**
      * validateInput 
-     * @param  Validator $validator
-     * @param  array $attributes
+     * @param  array $ruleValidators
+     * @param  array $requestAttributes
      * @return $validateErrors
      */
-    public function validateInput($validator, $attributes)
+    public function validateInput($ruleValidators, $requestAttributes)
     {
-        $rules = $validator->getRules();
-        $ruleAttributes = array_keys($rules);
+        $ruleAttributes = array_keys($ruleValidators);
+        $requestAttributeKeys = array_keys($requestAttributes);
         $validateErrors = [];
 
-        foreach ($attributes as $attribute) {
-            if (!in_array($attribute, $ruleAttributes)) {
-                $validateErrors[] = "$attribute is not allowed change.";
+        foreach ($requestAttributeKeys as $requestAttributeKey) {
+            if (!in_array($requestAttributeKey, $ruleAttributes)) {
+                $validateErrors[] = "$requestAttributeKey is not allowed change.";
             }
         }
 
