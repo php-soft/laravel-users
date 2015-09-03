@@ -316,37 +316,55 @@ class UserControllerTest extends TestCase
         $this->assertEquals(1, count($results->entities));
     }
 
-    public function testBlockUser()
+    public function testBlock()
     {
         // check user doesn't exist
-        $res = $this->call('GET', '/users/2/block');
-        $this->assertEquals(400, $res->getStatusCode());
+        $res = $this->call('POST', '/users/2/block');
+        $this->assertEquals(404, $res->getStatusCode());
 
         // check user has blocked
-        $user = App\User::find(1);
+        $user = User::find(1);
         $user->status = User::STATUS_BLOCK;
         $user->save();
 
-        $res = $this->call('GET', '/users/1/block');
-        $this->assertEquals(200, $res->getStatusCode());
-        $message = json_decode($res->getContent());
-        $this->assertEquals('User has blocked already.', $message);
-    }
+        $res = $this->call('POST', '/users/1/block');
+        $this->assertEquals(204, $res->getStatusCode());
 
-    public function testUnBlockUser()
-    {
-        // check user doesn't exist
-        $res = $this->call('GET', '/users/2/unblock');
-        $this->assertEquals(400, $res->getStatusCode());
-
-        // check user has unblocked
-        $user = App\User::find(1);
+        // check user is blocked after set block
+        $user = User::find(1);
         $user->status = User::STATUS_ACTIVE_EMAIL;
         $user->save();
 
-        $res = $this->call('GET', '/users/1/unblock');
-        $this->assertEquals(200, $res->getStatusCode());
-        $message = json_decode($res->getContent());
-        $this->assertEquals('User has unblocked already.', $message);
+        $res = $this->call('POST', '/users/1/block');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        $user = User::find(1);
+        $this->assertTrue($user->isBlock());
+    }
+
+    public function testUnBlock()
+    {
+        // check user doesn't exist
+        $res = $this->call('POST', '/users/2/unblock');
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // check user has unblocked
+        $user = User::find(1);
+        $user->status = User::STATUS_ACTIVE_EMAIL;
+        $user->save();
+
+        $res = $this->call('POST', '/users/1/unblock');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        // check user is unblocked after set unblock
+        $user = User::find(1);
+        $user->status = User::STATUS_BLOCK;
+        $user->save();
+
+        $res = $this->call('POST', '/users/1/unblock');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        $user = User::find(1);
+        $this->assertFalse($user->isBlock());
     }
 }

@@ -143,7 +143,7 @@ class User extends Model
      * @param  int $status
      * @return int
      */
-    public function unBlock()
+    public function unblock()
     {
         $this->status = $this->status & ~User::STATUS_BLOCK;
         return $this->save();
@@ -157,6 +157,6 @@ class User extends Model
      */
     public function isBlock()
     {
-        return ($this->status)==($this->status & User::STATUS_BLOCK);
+        return (User::STATUS_BLOCK)==($this->status & User::STATUS_BLOCK);
     }
 }
