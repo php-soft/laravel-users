@@ -134,9 +134,16 @@ class UserControllerTest extends TestCase
 
         //test input invalid
         $res = $this->call('PATCH', '/me/profile', [
-           'password' => '123456'
+           'password' => '123456',
+           'email'    => 'vunh@greenglobal.vn',
+           'name'     => 'Lisa',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals('validation', $results->type);
+        $this->assertEquals('error', $results->status);
         $this->assertEquals(400, $res->getStatusCode());
+        $this->assertEquals('password is not allowed change.', $results->message);
 
         // test update user by id
         $res = $this->call('PATCH', '/users/12/profile');
