@@ -145,6 +145,7 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
+    Route::patch('/users/{id}/profile', '\PhpSoft\Users\Controllers\UserController@update');
 });
 ```
 
