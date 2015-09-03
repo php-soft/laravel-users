@@ -102,14 +102,14 @@ class UserControllerTest extends TestCase
     public function testCheckAuthUpdateProfile()
     {
         $this->withoutMiddleware();
-        $res = $this->call('PATCH', '/me/profile');
+        $res = $this->call('PATCH', '/me');
         $this->assertEquals(401, $res->getStatusCode());
     }
 
     public function testUpdateProfileFailure()
     {
         // test auth
-        $res = $this->call('PATCH', '/me/profile', [
+        $res = $this->call('PATCH', '/me', [
            'name' => 'Steven',
         ]);
 
@@ -122,7 +122,7 @@ class UserControllerTest extends TestCase
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $name = str_repeat("abc", 100);
-        $res = $this->call('PATCH', '/me/profile', [
+        $res = $this->call('PATCH', '/me', [
            'name'     => $name,
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
         
@@ -133,7 +133,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
 
         //test input invalid
-        $res = $this->call('PATCH', '/me/profile', [
+        $res = $this->call('PATCH', '/me', [
            'password' => '123456',
            'email'    => 'vunh@greenglobal.vn',
            'name'     => 'Lisa',
@@ -146,7 +146,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('password is not allowed change.', $results->message);
 
         // test update user by id
-        $res = $this->call('PATCH', '/users/12/profile');
+        $res = $this->call('PATCH', '/users/12');
         $this->assertEquals(404, $res->getStatusCode());
     }
 
@@ -154,7 +154,7 @@ class UserControllerTest extends TestCase
     {
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
-        $res = $this->call('PATCH', '/me/profile', [
+        $res = $this->call('PATCH', '/me', [
             'name'    => 'Steven Adam',
             'country' => 'USA',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
@@ -170,7 +170,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('admin@example.com', $user->email);
 
         // test update user by id
-        $res = $this->call('PATCH', '/users/1/profile', [
+        $res = $this->call('PATCH', '/users/1', [
             'name'    => 'timcook',
             'country' => 'UK',
         ]);
