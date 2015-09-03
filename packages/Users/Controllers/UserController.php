@@ -190,7 +190,7 @@ class UserController extends Controller
         }
 
         if (!$user->block()) {
-            return response()->json(null, 500);
+            return response()->json(null, 500); // @codeCoverageIgnore
         }
 
         return response()->json(null, 204);
@@ -215,7 +215,7 @@ class UserController extends Controller
         }
 
         if (!$user->unblock()) {
-            return response()->json(null, 500);
+            return response()->json(null, 500); // @codeCoverageIgnore
         }
 
         return response()->json(null, 204);
