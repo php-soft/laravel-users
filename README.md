@@ -134,7 +134,7 @@ Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if use JSON Web Token
     Route::post('/auth/logout', '\PhpSoft\Users\Controllers\AuthController@logout');
     Route::get('/me', '\PhpSoft\Users\Controllers\UserController@authenticated');
-    Route::patch('/me/profile', '\PhpSoft\Users\Controllers\UserController@updateProfile');
+    Route::patch('/me', '\PhpSoft\Users\Controllers\UserController@updateProfile');
     Route::put('/me/password', '\PhpSoft\Users\Controllers\PasswordController@change');
 
 });
@@ -145,7 +145,7 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
-
+    Route::patch('/users/{id}', '\PhpSoft\Users\Controllers\UserController@update');
     Route::post('/users/{id}/block', '\PhpSoft\Users\Controllers\UserController@block');
     Route::post('/users/{id}/unblock', '\PhpSoft\Users\Controllers\UserController@unblock');
 });

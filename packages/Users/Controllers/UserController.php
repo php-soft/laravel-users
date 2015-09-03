@@ -60,9 +60,10 @@ class UserController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function updateProfile(Request $request)
+    public function update(Request $request, $id = null)
     {
-        if (!$this->checkAuth()) {
+        // check auth if update me
+        if (!$id && !$this->checkAuth()) {
             return response()->json(null, 401);
         }
 
@@ -86,18 +87,23 @@ class UserController extends Controller
 
         // check attribute invalid
         $rules = $validator->getRules();
-        $ruleAttributes = array_keys($rules);
         $requestAttributes = $request->all();
-        $requestAttributeKeys = array_keys($requestAttributes);
+        $validatorErrors = $this->validateInput($rules, $requestAttributes);
 
-        foreach ($requestAttributeKeys as $requestAttributeKey) {
-            if (!in_array($requestAttributeKey, $ruleAttributes)) {
-                return response()->json(null, 400);
-            }
+        if ($validatorErrors) {
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
+                'errors' => $validatorErrors
+            ]), 400);
         }
 
+        // check user
+        $user = $id ? User::find($id) : Auth::user();
+
         // Update profile
-        $user = Auth::user();
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
         $updateProfile = $user->update($requestAttributes);
         
         if (!$updateProfile) {

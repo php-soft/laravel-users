@@ -104,14 +104,14 @@ class UserControllerTest extends TestCase
     public function testCheckAuthUpdateProfile()
     {
         $this->withoutMiddleware();
-        $res = $this->call('PATCH', '/me/profile');
+        $res = $this->call('PATCH', '/me');
         $this->assertEquals(401, $res->getStatusCode());
     }
 
     public function testUpdateProfileFailure()
     {
         // test auth
-        $res = $this->call('PATCH', '/me/profile', [
+        $res = $this->call('PATCH', '/me', [
            'name' => 'Steven',
         ]);
 
@@ -124,7 +124,7 @@ class UserControllerTest extends TestCase
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $name = str_repeat("abc", 100);
-        $res = $this->call('PATCH', '/me/profile', [
+        $res = $this->call('PATCH', '/me', [
            'name'     => $name,
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
         
@@ -133,20 +133,33 @@ class UserControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
+
         //test input invalid
-        $res = $this->call('PATCH', '/me/profile', [
-           'password' => '123456'
+        $res = $this->call('PATCH', '/me', [
+           'password' => '123456',
+           'email'    => 'vunh@greenglobal.vn',
+           'name'     => 'Lisa',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals('validation', $results->type);
+        $this->assertEquals('error', $results->status);
         $this->assertEquals(400, $res->getStatusCode());
+        $this->assertEquals('The password can not be changed.', $results->message);
+
+        // test update user by id
+        $res = $this->call('PATCH', '/users/12');
+        $this->assertEquals(404, $res->getStatusCode());
     }
 
     public function testUpdateProfileSuccess()
     {
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
-        $res = $this->call('PATCH', '/me/profile', [
-            'name'    => 'Steven Adam',
-            'country' => 'USA',
+        $res = $this->call('PATCH', '/me', [
+            'name'     => 'Steven Adam',
+            'country'  => 'USA',
+            'location' => ''
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $results = json_decode($res->getContent());
@@ -158,6 +171,19 @@ class UserControllerTest extends TestCase
         $this->assertEquals('Steven Adam', $user->name);
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
+        $this->assertEquals('', $user->location);
+        $this->assertEquals('greenglobal.vn', $user->website);
+
+        // test update user by id
+        $res = $this->call('PATCH', '/users/1', [
+            'name'    => 'timcook',
+            'country' => 'UK',
+        ]);
+
+        $this->assertEquals(200, $res->getStatusCode());
+        $user = \App\User::find(1);
+        $this->assertEquals('timcook', $user->name);
+        $this->assertEquals('UK', $user->country);
     }
 
     public function testDestroyUser()

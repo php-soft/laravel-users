@@ -3,6 +3,7 @@
 namespace PhpSoft\Users\Controllers;
 
 use Auth;
+use Validator;
 use App\Http\Controllers\Controller as AppController;
 
 class Controller extends AppController
@@ -25,5 +26,26 @@ class Controller extends AppController
     public function checkPermission($permission)
     {
         return Auth::user()->can($permission) || Auth::user()->hasRole('admin');
+    }
+
+    /**
+     * Validate Input 
+     * @param  array $rules
+     * @param  array $requestAttributes
+     * @return $validateErrors
+     */
+    public function validateInput($rules, $requestAttributes)
+    {
+        $ruleAttributes = array_keys($rules);
+        $requestAttributeKeys = array_keys($requestAttributes);
+        $validateErrors = [];
+
+        foreach ($requestAttributeKeys as $requestAttributeKey) {
+            if (!in_array($requestAttributeKey, $ruleAttributes)) {
+                $validateErrors[] = "The $requestAttributeKey can not be changed.";
+            }
+        }
+
+        return $validateErrors;
     }
 }
