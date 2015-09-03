@@ -30,13 +30,13 @@ class Controller extends AppController
 
     /**
      * Validate Input 
-     * @param  array $ruleValidators
+     * @param  array $rules
      * @param  array $requestAttributes
      * @return $validateErrors
      */
-    public function validateInput($ruleValidators, $requestAttributes)
+    public function validateInput($rules, $requestAttributes)
     {
-        $ruleAttributes = array_keys($ruleValidators);
+        $ruleAttributes = array_keys($rules);
         $requestAttributeKeys = array_keys($requestAttributes);
         $validateErrors = [];
 
