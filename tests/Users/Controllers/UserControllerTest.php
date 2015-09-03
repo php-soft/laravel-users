@@ -145,7 +145,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('validation', $results->type);
         $this->assertEquals('error', $results->status);
         $this->assertEquals(400, $res->getStatusCode());
-        $this->assertEquals('password is not allowed change.', $results->message);
+        $this->assertEquals('the password can not be changed.', $results->message);
 
         // test update user by id
         $res = $this->call('PATCH', '/users/12');

@@ -27,8 +27,9 @@ class Controller extends AppController
     {
         return Auth::user()->can($permission) || Auth::user()->hasRole('admin');
     }
+
     /**
-     * validateInput 
+     * Validate Input 
      * @param  array $ruleValidators
      * @param  array $requestAttributes
      * @return $validateErrors
@@ -41,7 +42,7 @@ class Controller extends AppController
 
         foreach ($requestAttributeKeys as $requestAttributeKey) {
             if (!in_array($requestAttributeKey, $ruleAttributes)) {
-                $validateErrors[] = "$requestAttributeKey is not allowed change.";
+                $validateErrors[] = "the $requestAttributeKey can not be changed.";
             }
         }
 

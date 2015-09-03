@@ -62,8 +62,11 @@ class UserController extends Controller
      */
     public function update(Request $request, $id = null)
     {
-        if (!$this->checkAuth()) {
-            return response()->json(null, 401);
+        // check auth if update me
+        if (!$id) {
+            if (!$this->checkAuth()) {
+                return response()->json(null, 401);
+            }
         }
 
         // validate data
