@@ -1,5 +1,7 @@
 <?php
 
+use PhpSoft\Users\Models\User;
+
 class UserControllerTest extends TestCase
 {
     public function testGetAuthenticatedUserNotSendToken()
@@ -335,5 +337,57 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals(1, count($results->entities));
+    }
+
+    public function testBlock()
+    {
+        // check user doesn't exist
+        $res = $this->call('POST', '/users/2/block');
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // check user has blocked
+        $user = User::find(1);
+        $user->status = User::STATUS_BLOCK;
+        $user->save();
+
+        $res = $this->call('POST', '/users/1/block');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        // check user is blocked after set block
+        $user = User::find(1);
+        $user->status = User::STATUS_ACTIVE_EMAIL;
+        $user->save();
+
+        $res = $this->call('POST', '/users/1/block');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        $user = User::find(1);
+        $this->assertTrue($user->isBlock());
+    }
+
+    public function testUnBlock()
+    {
+        // check user doesn't exist
+        $res = $this->call('POST', '/users/2/unblock');
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // check user has unblocked
+        $user = User::find(1);
+        $user->status = User::STATUS_ACTIVE_EMAIL;
+        $user->save();
+
+        $res = $this->call('POST', '/users/1/unblock');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        // check user is unblocked after set unblock
+        $user = User::find(1);
+        $user->status = User::STATUS_BLOCK;
+        $user->save();
+
+        $res = $this->call('POST', '/users/1/unblock');
+        $this->assertEquals(204, $res->getStatusCode());
+
+        $user = User::find(1);
+        $this->assertFalse($user->isBlock());
     }
 }

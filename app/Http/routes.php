@@ -48,4 +48,6 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
     Route::patch('/users/{id}', '\PhpSoft\Users\Controllers\UserController@update');
+    Route::post('/users/{id}/block', '\PhpSoft\Users\Controllers\UserController@block');
+    Route::post('/users/{id}/unblock', '\PhpSoft\Users\Controllers\UserController@unblock');
 });
