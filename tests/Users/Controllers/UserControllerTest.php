@@ -145,7 +145,7 @@ class UserControllerTest extends TestCase
         $this->assertEquals('validation', $results->type);
         $this->assertEquals('error', $results->status);
         $this->assertEquals(400, $res->getStatusCode());
-        $this->assertEquals('the password can not be changed.', $results->message);
+        $this->assertEquals('The password can not be changed.', $results->message);
 
         // test update user by id
         $res = $this->call('PATCH', '/users/12');
@@ -157,8 +157,9 @@ class UserControllerTest extends TestCase
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $res = $this->call('PATCH', '/me', [
-            'name'    => 'Steven Adam',
-            'country' => 'USA',
+            'name'     => 'Steven Adam',
+            'country'  => 'USA',
+            'location' => ''
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $results = json_decode($res->getContent());
@@ -170,6 +171,8 @@ class UserControllerTest extends TestCase
         $this->assertEquals('Steven Adam', $user->name);
         $this->assertEquals('USA', $user->country);
         $this->assertEquals('admin@example.com', $user->email);
+        $this->assertEquals('', $user->location);
+        $this->assertEquals('greenglobal.vn', $user->website);
 
         // test update user by id
         $res = $this->call('PATCH', '/users/1', [

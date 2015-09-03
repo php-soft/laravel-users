@@ -42,7 +42,7 @@ class Controller extends AppController
 
         foreach ($requestAttributeKeys as $requestAttributeKey) {
             if (!in_array($requestAttributeKey, $ruleAttributes)) {
-                $validateErrors[] = "the $requestAttributeKey can not be changed.";
+                $validateErrors[] = "The $requestAttributeKey can not be changed.";
             }
         }
 
