@@ -8,6 +8,9 @@ class User extends Model
 {
     use UserTrait;
 
+    const STATUS_ACTIVE_EMAIL = 1;
+    const STATUS_BLOCK        = 2;
+
     /**
      * The database table used by the model.
      *
@@ -120,5 +123,40 @@ class User extends Model
             'limit'  => empty($options['limit']) ? 0 : $options['limit'],
             'data'   => $find->get(),
         ];
+    }
+
+    /**
+     * set status is block
+     * 
+     * @param  int $status
+     * @return int
+     */
+    public function block()
+    {
+        $this->status = $this->status | User::STATUS_BLOCK;
+        return $this->save();
+    }
+
+    /**
+     * set status is non block
+     * 
+     * @param  int $status
+     * @return int
+     */
+    public function unblock()
+    {
+        $this->status = $this->status & ~User::STATUS_BLOCK;
+        return $this->save();
+    }
+
+    /**
+     * check status is block
+     * 
+     * @param  int  $status
+     * @return boolean
+     */
+    public function isBlock()
+    {
+        return (User::STATUS_BLOCK)==($this->status & User::STATUS_BLOCK);
     }
 }

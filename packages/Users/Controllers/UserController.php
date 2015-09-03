@@ -170,4 +170,54 @@ class UserController extends Controller
             'users' => $users,
         ]), 200);
     }
+
+    /**
+     * block user
+     * 
+     * @param  int $id
+     * @return json
+     */
+    public function block($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        if ($user->isBlock()) {
+            return response()->json(null, 204);
+        }
+
+        if (!$user->block()) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
+
+        return response()->json(null, 204);
+    }
+
+    /**
+     * unblock user
+     * 
+     * @param  int $id
+     * @return json
+     */
+    public function unblock($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        if (!$user->isBlock()) {
+            return response()->json(null, 204);
+        }
+
+        if (!$user->unblock()) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
+
+        return response()->json(null, 204);
+    }
 }
