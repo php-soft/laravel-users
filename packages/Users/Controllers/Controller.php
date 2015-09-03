@@ -31,7 +31,7 @@ class Controller extends AppController
      * validateInput 
      * @param  Validator $validator
      * @param  array $attributes
-     * @return boolean
+     * @return $validateErrors
      */
     public function validateInput($validator, $attributes)
     {
@@ -43,10 +43,6 @@ class Controller extends AppController
             if (!in_array($attribute, $ruleAttributes)) {
                 $validateErrors[] = "$attribute is not allowed change.";
             }
-        }
-
-        if (!$validateErrors) {
-            return false;
         }
 
         return $validateErrors;
