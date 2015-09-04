@@ -104,7 +104,9 @@ class User extends PhpSoftUser implements AuthenticatableContract, CanResetPassw
         'biography',
         'occupation',
         'website',
-        'image'
+        'image',
+        'birthday',
+        'gender'
     ];
 
     // ...
