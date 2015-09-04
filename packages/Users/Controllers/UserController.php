@@ -40,6 +40,13 @@ class UserController extends Controller
             'name'      => 'required|max:255',
             'email'     => 'required|email|max:255|unique:users',
             'password'  => 'required|confirmed|min:6',
+            'username'   => 'max:30',
+            'country'    => 'max:100',
+            'location'   => 'max:100',
+            'biography'  => 'max:255',
+            'occupation' => 'max:255',
+            'website'    => 'max:255',
+            'image'      => 'max:255',
         ]);
 
         if ($validator->fails()) {

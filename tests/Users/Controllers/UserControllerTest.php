@@ -101,6 +101,24 @@ class UserControllerTest extends TestCase
         $this->assertEquals('fish@example.com', $user->email);
     }
 
+    public function testCreateSuccess()
+    {
+        $res = $this->call('POST', '/users/create', [
+            'name'                  => 'Cat Bone',
+            'email'                 => 'cat@example.com',
+            'password'              => '123456',
+            'password_confirmation' => '123456',
+        ]);
+        $this->assertEquals(201, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('Cat Bone', $results->entities[0]->name);
+
+        $userId = $results->entities[0]->id;
+        $user = \App\User::find($userId);
+        $this->assertEquals('Cat Bone', $user->name);
+        $this->assertEquals('cat@example.com', $user->email);
+    }
+
     public function testCheckAuthUpdateProfile()
     {
         $this->withoutMiddleware();
