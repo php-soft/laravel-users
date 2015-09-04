@@ -132,7 +132,6 @@ Add routes in `app/Http/routes.php`
 
 ```php
 Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
-Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'auth'], function() { // use middleware jwt.auth if use JSON Web Token
     Route::post('/auth/logout', '\PhpSoft\Users\Controllers\AuthController@logout');
     Route::get('/me', '\PhpSoft\Users\Controllers\UserController@authenticated');
@@ -144,6 +143,7 @@ Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
 Route::group(['middleware'=>'routePermission'], function() {
 
+    Route::post('/users', '\PhpSoft\Users\Controllers\UserController@store');
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
