@@ -77,6 +77,8 @@ class UserController extends Controller
             'occupation' => 'max:255',
             'website'    => 'max:255',
             'image'      => 'max:255',
+            'gender'     => 'Integer',
+            'birthday'   => 'date'
         ]);
 
         if ($validator->fails()) {
