@@ -9,5 +9,7 @@ $this->extract($user, [
     'biography',
     'occupation',
     'website',
-    'image'
+    'image',
+    'birthday',
+    'gender'
 ]);

@@ -217,6 +217,8 @@ class UserControllerTest extends TestCase
         $this->assertEquals($user->username, $results->entities[0]->username);
         $this->assertEquals($user->id, $results->entities[0]->id);
         $this->assertEquals($user->website, $results->entities[0]->website);
+        $this->assertEquals($user->birthday, $results->entities[0]->birthday);
+        $this->assertEquals($user->gender, $results->entities[0]->gender);
 
     }
 

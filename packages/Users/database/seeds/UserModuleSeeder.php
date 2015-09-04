@@ -26,6 +26,8 @@ namespace {
                 'occupation'=> 'Dev',
                 'website'   => 'greenglobal.vn',
                 'image'     => 'avatar.jpg',
+                'birthday'  => '1991-09-17',
+                'gender'    => 1
             ]);
 
             // create default roles
