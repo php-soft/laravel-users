@@ -33,7 +33,9 @@ class User extends Model
         'biography',
         'occupation',
         'website',
-        'image'
+        'image',
+        'birthday',
+        'gender'
     ];
 
     public static $filters = [

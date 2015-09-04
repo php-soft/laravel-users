@@ -37,9 +37,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => 'required|max:255',
-            'email'     => 'required|email|max:255|unique:users',
-            'password'  => 'required|confirmed|min:6',
+            'name'       => 'required|max:255',
+            'email'      => 'required|email|max:255|unique:users',
+            'password'   => 'required|confirmed|min:6',
             'username'   => 'max:30',
             'country'    => 'max:100',
             'location'   => 'max:100',
@@ -47,6 +47,8 @@ class UserController extends Controller
             'occupation' => 'max:255',
             'website'    => 'max:255',
             'image'      => 'max:255',
+            'gender'     => 'integer',
+            'birthday'   => 'date'
         ]);
 
         if ($validator->fails()) {
@@ -84,6 +86,8 @@ class UserController extends Controller
             'occupation' => 'max:255',
             'website'    => 'max:255',
             'image'      => 'max:255',
+            'gender'     => 'integer',
+            'birthday'   => 'date'
         ]);
 
         if ($validator->fails()) {

@@ -120,12 +120,14 @@ class UserControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
 
-        // test invalid name
+        // test invalid validate input
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $name = str_repeat("abc", 100);
         $res = $this->call('PATCH', '/me', [
            'name'     => $name,
+           'gender'   => 'male',
+           'birthday' => '1987',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
         
         $results = json_decode($res->getContent());
@@ -133,6 +135,8 @@ class UserControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
+        $this->assertEquals('The gender must be an integer.', $results->errors->gender[0]);
+        $this->assertEquals('The birthday is not a valid date.', $results->errors->birthday[0]);
 
         //test input invalid
         $res = $this->call('PATCH', '/me', [
@@ -159,7 +163,9 @@ class UserControllerTest extends TestCase
         $res = $this->call('PATCH', '/me', [
             'name'     => 'Steven Adam',
             'country'  => 'USA',
-            'location' => ''
+            'location' => '',
+            'gender'   => 1,
+            'birthday' => '1987-09-05'
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $results = json_decode($res->getContent());
@@ -217,6 +223,8 @@ class UserControllerTest extends TestCase
         $this->assertEquals($user->username, $results->entities[0]->username);
         $this->assertEquals($user->id, $results->entities[0]->id);
         $this->assertEquals($user->website, $results->entities[0]->website);
+        $this->assertEquals($user->birthday, $results->entities[0]->birthday);
+        $this->assertEquals($user->gender, $results->entities[0]->gender);
 
     }
 
