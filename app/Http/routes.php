@@ -30,7 +30,6 @@ Route::group(['middleware'=>'routePermission'], function() {
 });
 
 Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
-Route::post('/users', '\PhpSoft\Users\Controllers\UserController@create');
 Route::group(['middleware'=>'jwt.auth'], function() {
 
     Route::post('/auth/logout', '\PhpSoft\Users\Controllers\AuthController@logout');
@@ -44,7 +43,7 @@ Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
 Route::group(['middleware'=>'routePermission'], function() {
 
-    Route::post('/users/create', '\PhpSoft\Users\Controllers\UserController@create');
+    Route::post('/users', '\PhpSoft\Users\Controllers\UserController@store');
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');

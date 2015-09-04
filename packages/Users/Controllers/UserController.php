@@ -34,7 +34,7 @@ class UserController extends Controller
      * @param  Request $request
      * @return Response
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|max:255',
