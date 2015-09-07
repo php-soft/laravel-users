@@ -260,7 +260,7 @@ By other way, you can use other view and config `password.email` in `config\auth
 
 #### PhpSoft\Users\Middleware\Permission
 
-This middleware is use to check permission for an action.
+This middleware is used to check permission for an action.
 
 Add route middlewares in app/Http/Kernel.php
 
@@ -284,7 +284,7 @@ Route::post('/posts', [
 
 #### PhpSoft\Users\Middleware\RoutePermission
 
-This middleware is use to check permission for a route dynamic by database.
+This middleware is used to check permission for a route dynamic by database.
 
 Add route middlewares in app/Http/Kernel.php
 
@@ -317,3 +317,53 @@ PhpSoft\Users\Models\RoutePermission::setRouteRoles('POST /blog', ['creator']);
 // require permissions or roles
 PhpSoft\Users\Models\RoutePermission::setRoutePermissionsRoles('POST /blog', ['create-blog'], ['creator']);
 ```
+
+#### PhpSoft\Users\Middleware\Validate
+
+This middleware is used to check validate for fields on different applications which use this package.
+
+Add route middlewares in app/Http/Kernel.php
+
+```php
+protected $routeMiddleware = [
+    // ...
+    'validate'   => \PhpSoft\Users\Middleware\Validate::class,
+];
+```
+
+Usage
+
+```php
+Route::post('/blog', ['middleware'=>'validate:\PhpSoft\Users\Validators\BlogValidate',
+    function () {
+        //
+    }
+]);
+```
+With `\PhpSoft\Users\Validators\BlogValidate`, it's class which you need to declare in route. This class is used to declare rules to validate.
+
+You can also use other class to declare rules for validate in your application but It have to implements `PhpSoft\Users\Contracts\Validator` class.
+
+For example, I declared rules in `\PhpSoft\Users\Validators\BlogValidate` class as follows:
+
+```php
+use PhpSoft\Users\Contracts\Validator;
+
+/**
+ * Blog Validate
+ *
+ * return array
+ */
+class BlogValidate implements Validator
+{
+    public static function rules()
+    {
+        return [
+            'title'       => 'required|max:255',
+            'contents'    => 'required',
+            'image'       => 'required'
+        ];
+    }
+}
+```
+Here, you will declare fields that you want to validate them in array.

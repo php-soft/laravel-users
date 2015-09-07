@@ -29,6 +29,12 @@ Route::group(['middleware'=>'routePermission'], function() {
     });
 });
 
+Route::post('/blog', ['middleware'=>'validate:\PhpSoft\Users\Validators\BlogValidate',
+    function () {
+        return response()->json(null, 200);
+    }
+]);
+
 Route::post('/auth/login', '\PhpSoft\Users\Controllers\AuthController@login');
 Route::group(['middleware'=>'jwt.auth'], function() {
 

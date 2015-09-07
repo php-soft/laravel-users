@@ -26,12 +26,13 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'jwt.auth' => \PhpSoft\Users\Middleware\Authenticate::class,
-        'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
-        'permission' => \PhpSoft\Users\Middleware\Permission::class,
-        'routePermission' => \PhpSoft\Users\Middleware\RoutePermission::class,
+        'auth'           => \App\Http\Middleware\Authenticate::class,
+        'auth.basic'     => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'guest'          => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'jwt.auth'       => \PhpSoft\Users\Middleware\Authenticate::class,
+        'jwt.refresh'    => \Tymon\JWTAuth\Middleware\RefreshToken::class,
+        'permission'     => \PhpSoft\Users\Middleware\Permission::class,
+        'routePermission'=> \PhpSoft\Users\Middleware\RoutePermission::class,
+        'validate'       => \PhpSoft\Users\Middleware\Validate::class,
     ];
 }
