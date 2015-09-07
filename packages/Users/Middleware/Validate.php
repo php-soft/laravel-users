@@ -5,10 +5,6 @@ namespace PhpSoft\Users\Middleware;
 use Closure;
 use Validator;
 
-/**
- * Validate
- * 
- */
 class Validate
 {
     public function handle($request, Closure $next, $classValidate)

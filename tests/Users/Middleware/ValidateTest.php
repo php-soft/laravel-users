@@ -4,25 +4,26 @@ class ValidateTest extends TestCase
 {
     public function testValidateFailure()
     {
-        $res = $this->call('POST', '/blog');
+        $res = $this->call('POST', '/user');
         $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('error', $results->status);
         $this->assertEquals('validation', $results->type);
-        $this->assertObjectHasAttribute('title', $results->errors);
-        $this->assertEquals('The title field is required.', $results->errors->title[0]);
-        $this->assertObjectHasAttribute('contents', $results->errors);
-        $this->assertEquals('The contents field is required.', $results->errors->contents[0]);
-        $this->assertObjectHasAttribute('image', $results->errors);
-        $this->assertEquals('The image field is required.', $results->errors->image[0]);
+        $this->assertObjectHasAttribute('name', $results->errors);
+        $this->assertEquals('The name field is required.', $results->errors->name[0]);
+        $this->assertObjectHasAttribute('email', $results->errors);
+        $this->assertEquals('The email field is required.', $results->errors->email[0]);
+        $this->assertObjectHasAttribute('password', $results->errors);
+        $this->assertEquals('The password field is required.', $results->errors->password[0]);
     }
 
     public function testValidateSuccess()
     {
-        $res = $this->call('POST', '/blog', [
-            'title'    => 'Title',
-            'contents' => 'Contents',
-            'image'    => 'image'
+        $res = $this->call('POST', '/user', [
+            'name'                  => 'User',
+            'email'                 => 'user@example.com',
+            'password'              => 'password',
+            'password_confirmation' => 'password'
         ]);
         $this->assertEquals(200, $res->getStatusCode());
     }

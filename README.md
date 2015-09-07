@@ -334,34 +334,34 @@ protected $routeMiddleware = [
 Usage
 
 ```php
-Route::post('/blog', ['middleware'=>'validate:\PhpSoft\Users\Validators\BlogValidate',
+Route::post('/user', ['middleware'=>'validate: App\Http\Validators\UserValidate',
     function () {
         //
     }
 ]);
 ```
-With `\PhpSoft\Users\Validators\BlogValidate`, it's class which you need to declare in route. This class is used to declare rules to validate.
+With `App\Http\Validators\UserValidate`, it's class which you need to declare in route. This class is used to declare rules to validate.
 
 You can also use other class to declare rules for validate in your application but It have to implements `PhpSoft\Users\Contracts\Validator` class.
 
-For example, I declared rules in `\PhpSoft\Users\Validators\BlogValidate` class as follows:
+For example, I declared rules in `App\Http\Validators\UserValidate` class as follows:
 
 ```php
 use PhpSoft\Users\Contracts\Validator;
 
 /**
- * Blog Validate
+ * User Validate
  *
  * return array
  */
-class BlogValidate implements Validator
+class UserValidate implements Validator
 {
     public static function rules()
     {
         return [
-            'title'       => 'required|max:255',
-            'contents'    => 'required',
-            'image'       => 'required'
+            'name'       => 'required|max:255',
+            'email'      => 'required|email',
+            'password'   => 'required|confirmed|min:6'
         ];
     }
 }
