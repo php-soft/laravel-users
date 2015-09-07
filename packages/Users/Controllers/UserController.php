@@ -57,7 +57,7 @@ class UserController extends Controller
             ]), 400);
         }
 
-        $user = User::create($request->all());
+        $user = AppUser::create($request->all());
 
         return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
@@ -108,7 +108,7 @@ class UserController extends Controller
         }
 
         // check user
-        $user = $id ? User::find($id) : Auth::user();
+        $user = $id ? AppUser::find($id) : Auth::user();
 
         // Update profile
         if (!$user) {
@@ -134,7 +134,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         // get user by id
-        $user = User::find($id);
+        $user = AppUser::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -158,7 +158,7 @@ class UserController extends Controller
     public function show($id)
     {
         // get user by id
-        $user = User::find($id);
+        $user = AppUser::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -196,7 +196,7 @@ class UserController extends Controller
      */
     public function block($id)
     {
-        $user = User::find($id);
+        $user = AppUser::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -221,7 +221,7 @@ class UserController extends Controller
      */
     public function unblock($id)
     {
-        $user = User::find($id);
+        $user = AppUser::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
