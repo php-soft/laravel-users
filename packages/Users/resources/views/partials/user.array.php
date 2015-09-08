@@ -15,4 +15,3 @@ $this->extract($user, [
     'status'
 ]);
 $this->set('isBlock', $user->isBlock());
-
