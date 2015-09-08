@@ -212,7 +212,6 @@ class UserControllerTest extends TestCase
         $this->assertEquals($user->website, $results->entities[0]->website);
         $this->assertEquals($user->birthday, $results->entities[0]->birthday);
         $this->assertEquals($user->gender, $results->entities[0]->gender);
-        $this->assertEquals($user->status, $results->entities[0]->status);
     }
 
     public function testBrowseNotFound()
@@ -264,10 +263,11 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals(count($users)+1, count($results->entities));
+        $this->assertObjectHasAttribute('isBlock', $results->entities[0]);
         for ($i = 0; $i < 10; ++$i) {
             $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+            $this->assertFalse($results->entities[$i]->isBlock);
         }
-        $this->assertObjectHasAttribute('isBlock', $results->entities[0]);
     }
 
     public function testBrowseWithScroll()
