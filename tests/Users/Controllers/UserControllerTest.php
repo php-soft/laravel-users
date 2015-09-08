@@ -138,19 +138,6 @@ class UserControllerTest extends TestCase
         $this->assertEquals('The gender must be an integer.', $results->errors->gender[0]);
         $this->assertEquals('The birthday is not a valid date.', $results->errors->birthday[0]);
 
-        //test input invalid
-        $res = $this->call('PATCH', '/me', [
-           'password' => '123456',
-           'email'    => 'vunh@greenglobal.vn',
-           'name'     => 'Lisa',
-        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
-
-        $results = json_decode($res->getContent());
-        $this->assertEquals('validation', $results->type);
-        $this->assertEquals('error', $results->status);
-        $this->assertEquals(400, $res->getStatusCode());
-        $this->assertEquals('The password can not be changed.', $results->message);
-
         // test update user by id
         $res = $this->call('PATCH', '/users/12');
         $this->assertEquals(404, $res->getStatusCode());

@@ -27,25 +27,4 @@ class Controller extends AppController
     {
         return Auth::user()->can($permission) || Auth::user()->hasRole('admin');
     }
-
-    /**
-     * Validate Input 
-     * @param  array $rules
-     * @param  array $requestAttributes
-     * @return $validateErrors
-     */
-    public function validateInput($rules, $requestAttributes)
-    {
-        $ruleAttributes = array_keys($rules);
-        $requestAttributeKeys = array_keys($requestAttributes);
-        $validateErrors = [];
-
-        foreach ($requestAttributeKeys as $requestAttributeKey) {
-            if (!in_array($requestAttributeKey, $ruleAttributes)) {
-                $validateErrors[] = "The $requestAttributeKey can not be changed.";
-            }
-        }
-
-        return $validateErrors;
-    }
 }

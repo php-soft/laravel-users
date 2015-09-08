@@ -25,8 +25,6 @@ class User extends Model
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
         'username',
         'location',
         'country',
@@ -41,7 +39,7 @@ class User extends Model
     public static $filters = [
         'name',
         'email',
-        'username'
+        'username',
     ];
 
     /**
@@ -61,7 +59,12 @@ class User extends Model
     {
         $attributes['password'] = bcrypt($attributes['password']);
 
-        return parent::create($attributes)->fresh();
+        $user = new User($attributes);
+        $user->email    = $attributes['email'];
+        $user->password = $attributes['password'];
+        $user->save();
+
+        return $user;
     }
 
     /**
@@ -119,11 +122,17 @@ class User extends Model
             $find = $find->where('id', '<', $options['cursor']);
         }
 
+        $users = $find->get();
+
+        foreach ($users as $user) {
+            $user->status = parent::isBlock($user->status);
+        }
+
         return [
             'total'  => $total,
             'offset' => empty($options['offset']) ? 0 : $options['offset'],
             'limit'  => empty($options['limit']) ? 0 : $options['limit'],
-            'data'   => $find->get(),
+            'data'   => $users,
         ];
     }
 
