@@ -2,6 +2,7 @@
 
 namespace PhpSoft\Users\Models;
 
+use App\User as AppUser;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
@@ -59,7 +60,7 @@ class User extends Model
     {
         $attributes['password'] = bcrypt($attributes['password']);
 
-        $user = new User($attributes);
+        $user = new AppUser($attributes);
         $user->email    = $attributes['email'];
         $user->password = $attributes['password'];
         $user->save();
