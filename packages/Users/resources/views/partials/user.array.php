@@ -11,5 +11,6 @@ $this->extract($user, [
     'website',
     'image',
     'birthday',
-    'gender'
+    'gender',
 ]);
+$this->set('isBlock', $user->isBlock());

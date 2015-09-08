@@ -96,17 +96,6 @@ class UserController extends Controller
             ]), 400);
         }
 
-        // check attribute invalid
-        $rules = $validator->getRules();
-        $requestAttributes = $request->all();
-        $validatorErrors = $this->validateInput($rules, $requestAttributes);
-
-        if ($validatorErrors) {
-            return response()->json(arrayView('phpsoft.users::errors/validation', [
-                'errors' => $validatorErrors
-            ]), 400);
-        }
-
         // check user
         $user = $id ? AppUser::find($id) : Auth::user();
 
@@ -115,7 +104,7 @@ class UserController extends Controller
             return response()->json(null, 404);
         }
 
-        $updateProfile = $user->update($requestAttributes);
+        $updateProfile = $user->update($request->all());
         
         if (!$updateProfile) {
             return response()->json(null, 500); // @codeCoverageIgnore
