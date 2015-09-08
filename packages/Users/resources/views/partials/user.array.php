@@ -14,3 +14,5 @@ $this->extract($user, [
     'gender',
     'status'
 ]);
+$this->set('isBlock', $user->isBlock());
+

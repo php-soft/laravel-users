@@ -122,17 +122,11 @@ class User extends Model
             $find = $find->where('id', '<', $options['cursor']);
         }
 
-        $users = $find->get();
-
-        foreach ($users as $user) {
-            $user->status = parent::isBlock($user->status);
-        }
-
         return [
             'total'  => $total,
             'offset' => empty($options['offset']) ? 0 : $options['offset'],
             'limit'  => empty($options['limit']) ? 0 : $options['limit'],
-            'data'   => $users,
+            'data'   => $find->get(),
         ];
     }
 
