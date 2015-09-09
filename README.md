@@ -356,14 +356,34 @@ use PhpSoft\Users\Contracts\Validator;
  */
 class UserValidate implements Validator
 {
+    /**
+     * Custom validator
+     * 
+     * @return boolean
+     */
+    public static function boot()
+    {
+
+        IlluminateValidator::extend('validate_name', function($attribute, $value, $parameters) {
+
+                return $value == 'validate_name';
+            }, 'The name is in valid.'
+        );
+    }
+
+    /**
+     * Declare rules
+     * 
+     * @return array
+     */
     public static function rules()
     {
         return [
-            'name'       => 'required|max:255',
-            'email'      => 'required|email',
-            'password'   => 'required|confirmed|min:6'
+            'name'     => 'required|max:255|validate_name',
+            'email'    => 'required|email',
+            'password' => 'required|confirmed|min:6'
         ];
     }
 }
 ```
-Here, you will declare fields that you want to validate them in array.
+Here, you will declare fields that you want to validate them in `rules()` function. And You can also custom validator fields that you want by declare them in `boot()` function. 

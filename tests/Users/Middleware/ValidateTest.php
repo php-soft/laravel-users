@@ -17,10 +17,23 @@ class ValidateTest extends TestCase
         $this->assertEquals('The password field is required.', $results->errors->password[0]);
     }
 
+    public function testValidateNameFailure()
+    {
+         $res = $this->call('POST', '/user', [
+            'name'                  => 'Invalid name',
+            'email'                 => 'user@example.com',
+            'password'              => 'password',
+            'password_confirmation' => 'password'
+        ]);
+        $this->assertEquals(400, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('The name is in valid.', $results->errors->name[0]);
+    }
+
     public function testValidateSuccess()
     {
         $res = $this->call('POST', '/user', [
-            'name'                  => 'User',
+            'name'                  => 'validate_name',
             'email'                 => 'user@example.com',
             'password'              => 'password',
             'password_confirmation' => 'password'
