@@ -9,6 +9,7 @@ class Validate
 {
     public function handle($request, Closure $next, $classValidate)
     {
+        $classValidate::boot();
         $validator = Validator::make($request->all(), $classValidate::rules());
 
         if ($validator->fails()) {

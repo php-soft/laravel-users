@@ -2,6 +2,7 @@
 
 namespace App\Http\Validators;
 
+use Validator as IlluminateValidator;
 use PhpSoft\Users\Contracts\Validator;
 
 /**
@@ -11,10 +12,30 @@ use PhpSoft\Users\Contracts\Validator;
  */
 class UserValidate implements Validator
 {
+    /**
+     * Custom validator
+     * 
+     * @return boolean
+     */
+    public static function boot()
+    {
+
+        IlluminateValidator::extend('validate_name', function($attribute, $value, $parameters) {
+
+                return $value == 'validate_name';
+            }, 'The name is in valid.'
+        );
+    }
+
+    /**
+     * Declare rules
+     * 
+     * @return array
+     */
     public static function rules()
     {
         return [
-            'name'     => 'required|max:255',
+            'name'     => 'required|max:255|validate_name',
             'email'    => 'required|email',
             'password' => 'required|confirmed|min:6'
         ];
