@@ -270,6 +270,19 @@ class UserControllerTest extends TestCase
         }
     }
 
+    public function testBrowseWithOrder()
+    {
+        $user = factory(App\User::class)->create();
+        $user->name = 'B';
+        $user->save();
+
+        $res = $this->call('GET', '/users?sort=name&direction=desc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('B', $results->entities[0]->name);
+        $this->assertEquals('Administrator', $results->entities[1]->name);
+    }
+
     public function testBrowseWithScroll()
     {
         $users = [];
