@@ -277,26 +277,34 @@ class UserControllerTest extends TestCase
             $users[] = factory(App\User::class)->create();
         }
 
+        $arrayId = [];
+        for ($i = count($users)-1; $i >= 0; --$i) {
+            $arrayId[] = $users[$i]->id;
+        }
+
         //check order users with emty params
         $res = $this->call('GET', '/users');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals(count($results->entities), $results->entities[0]->id);
-        $this->assertEquals(count($results->entities)-1, $results->entities[1]->id);
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
 
         // check order users with wrong params
         $res = $this->call('GET', '/users?sort=title&direction=aa');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals(count($results->entities), $results->entities[0]->id);
-        $this->assertEquals(count($results->entities)-1, $results->entities[1]->id);
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
 
         // check order users with the input doesn't has sort
         $res = $this->call('GET', '/users?direction=desc');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals(count($results->entities), $results->entities[0]->id);
-        $this->assertEquals(count($results->entities)-1, $results->entities[1]->id);
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
     }
 
     public function testBrowseWithOrderRightParams()
