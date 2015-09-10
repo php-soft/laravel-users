@@ -83,11 +83,11 @@ class User extends Model
      */
     public static function browse($options = [])
     {
-        $find = parent::select('*');
-        $user = new AppUser;
+        $find = new AppUser();
+        $fillable = $find->fillable;
 
         if (!empty($options['filters'])) {
-            $inFilters = array_intersect($user->fillable, array_keys($options['filters']));
+            $inFilters = array_intersect($fillable, array_keys($options['filters']));
 
             if (!empty($inFilters)) {
                 foreach ($inFilters as $key) {
@@ -98,10 +98,8 @@ class User extends Model
 
         if (!empty($options['order'])) {
             foreach ($options['order'] as $field => $direction) {
-                if (in_array($field, $user->fillable)) {
-                    if ($direction !== NULL) {
-                        $find = $find->orderBy($field, $direction);
-                    }
+                if (in_array($field, $fillable)) {
+                    $find = $find->orderBy($field, $direction);
                 }
                 $find = $find->orderBy('id', 'DESC');
             }

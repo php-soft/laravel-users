@@ -165,7 +165,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = AppUser::browse([
-            'order'     => [ Input::get('sort') => Input::get('direction') ],
+            'order'     => [ Input::get('sort', 'id') => Input::get('direction', 'desc') ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),
             'offset'    => (Input::get('page', 1) - 1) * $limit,

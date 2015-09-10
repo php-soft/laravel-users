@@ -270,16 +270,59 @@ class UserControllerTest extends TestCase
         }
     }
 
-    public function testBrowseWithOrder()
+    public function testBrowseWithOrderWrongParams()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        //check order users with emty params
+        $res = $this->call('GET', '/users');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($results->entities), $results->entities[0]->id);
+        $this->assertEquals(count($results->entities)-1, $results->entities[1]->id);
+
+        // check order users with wrong params
+        $res = $this->call('GET', '/users?sort=title&direction=aa');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($results->entities), $results->entities[0]->id);
+        $this->assertEquals(count($results->entities)-1, $results->entities[1]->id);
+
+        // check order users with the input doesn't has sort
+        $res = $this->call('GET', '/users?direction=desc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($results->entities), $results->entities[0]->id);
+        $this->assertEquals(count($results->entities)-1, $results->entities[1]->id);
+    }
+
+    public function testBrowseWithOrderRightParams()
     {
         $user = factory(App\User::class)->create();
         $user->name = 'B';
         $user->save();
 
+        // check order users with full input
         $res = $this->call('GET', '/users?sort=name&direction=desc');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals('B', $results->entities[0]->name);
+        $this->assertEquals($user->name, $results->entities[0]->name);
+        $this->assertEquals('Administrator', $results->entities[1]->name);
+
+        $res = $this->call('GET', '/users?sort=name&direction=asc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('Administrator', $results->entities[0]->name);
+        $this->assertEquals($user->name, $results->entities[1]->name);
+
+        // check order users with only sort
+        $res = $this->call('GET', '/users?sort=name');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals($user->name, $results->entities[0]->name);
         $this->assertEquals('Administrator', $results->entities[1]->name);
     }
 
