@@ -270,6 +270,84 @@ class UserControllerTest extends TestCase
         }
     }
 
+    public function testBrowseWithOrderWrongParams()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        $arrayId = [];
+        for ($i = count($users)-1; $i >= 0; --$i) {
+            $arrayId[] = $users[$i]->id;
+        }
+
+        //check order users with emty params
+        $res = $this->call('GET', '/users');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
+
+        // check order users with wrong params
+        $res = $this->call('GET', '/users?sort=title&direction=aa');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
+
+        // check order users with the input doesn't has sort
+        $res = $this->call('GET', '/users?direction=desc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
+    }
+
+    public function testBrowseWithOrderRightParams()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create(['name'=>'Name ' . $i]);
+        }
+
+        $arrayNameDesc = [];
+        for ($i = count($users)-1; $i >= 0; --$i) {
+            $arrayNameDesc[] = $users[$i]->name;
+        }
+
+        $arrayNameAsc = [];
+        for ($i = 0; $i < count($users); ++$i) {
+            $arrayNameAsc[] = $users[$i]->name;
+        }
+
+        // check order users with full input
+        $res = $this->call('GET', '/users?sort=name&direction=desc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameDesc[$i], $results->entities[$i]->name);
+        }
+
+        $res = $this->call('GET', '/users?sort=name&direction=asc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameAsc[$i], $results->entities[$i+1]->name);
+        }
+
+        // check order users with only sort
+        $res = $this->call('GET', '/users?sort=name');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameDesc[$i], $results->entities[$i]->name);
+        }
+    }
+
     public function testBrowseWithScroll()
     {
         $users = [];

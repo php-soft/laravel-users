@@ -37,12 +37,6 @@ class User extends Model
         'gender'
     ];
 
-    public static $filters = [
-        'name',
-        'email',
-        'username',
-    ];
-
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -89,12 +83,11 @@ class User extends Model
      */
     public static function browse($options = [])
     {
-        $find = parent::select('*');
+        $find = new AppUser();
+        $fillable = $find->fillable;
 
         if (!empty($options['filters'])) {
-            $className = get_called_class();
-            $filters = $className::$filters;
-            $inFilters = array_intersect($filters, array_keys($options['filters']));
+            $inFilters = array_intersect($fillable, array_keys($options['filters']));
 
             if (!empty($inFilters)) {
                 foreach ($inFilters as $key) {
@@ -105,7 +98,10 @@ class User extends Model
 
         if (!empty($options['order'])) {
             foreach ($options['order'] as $field => $direction) {
-                $find = $find->orderBy($field, $direction);
+                if (in_array($field, $fillable)) {
+                    $find = $find->orderBy($field, $direction);
+                }
+                $find = $find->orderBy('id', 'DESC');
             }
         }
 
