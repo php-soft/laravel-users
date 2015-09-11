@@ -309,29 +309,43 @@ class UserControllerTest extends TestCase
 
     public function testBrowseWithOrderRightParams()
     {
-        $user = factory(App\User::class)->create();
-        $user->name = 'B';
-        $user->save();
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create(['name'=>'Name ' . $i]);
+        }
+
+        $arrayNameDesc = [];
+        for ($i = count($users)-1; $i >= 0; --$i) {
+            $arrayNameDesc[] = $users[$i]->name;
+        }
+
+        $arrayNameAsc = [];
+        for ($i = 0; $i < count($users); ++$i) {
+            $arrayNameAsc[] = $users[$i]->name;
+        }
 
         // check order users with full input
         $res = $this->call('GET', '/users?sort=name&direction=desc');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals($user->name, $results->entities[0]->name);
-        $this->assertEquals('Administrator', $results->entities[1]->name);
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameDesc[$i], $results->entities[$i]->name);
+        }
 
         $res = $this->call('GET', '/users?sort=name&direction=asc');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals('Administrator', $results->entities[0]->name);
-        $this->assertEquals($user->name, $results->entities[1]->name);
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameAsc[$i], $results->entities[$i+1]->name);
+        }
 
         // check order users with only sort
         $res = $this->call('GET', '/users?sort=name');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals($user->name, $results->entities[0]->name);
-        $this->assertEquals('Administrator', $results->entities[1]->name);
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameDesc[$i], $results->entities[$i]->name);
+        }
     }
 
     public function testBrowseWithScroll()
