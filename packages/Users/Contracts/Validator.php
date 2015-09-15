@@ -9,7 +9,7 @@ interface Validator
      * 
      * @return boolean
      */
-    public static function boot();
+    public static function boot($request);
 
     /**
      * Declare rules
