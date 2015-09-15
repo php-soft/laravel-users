@@ -361,7 +361,7 @@ class UserValidate implements Validator
      * 
      * @return boolean
      */
-    public static function boot()
+    public static function boot($request)
     {
 
         IlluminateValidator::extend('validate_name', function($attribute, $value, $parameters) {
