@@ -76,5 +76,4 @@ class Permission extends EntrustPermission
             'data'   => $find->get(),
         ];
     }
-
 }

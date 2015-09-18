@@ -42,4 +42,10 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::post('/permissions', '\PhpSoft\Users\Controllers\PermissionController@store');
     Route::patch('/permissions/{id}', '\PhpSoft\Users\Controllers\PermissionController@update');
     Route::delete('/permissions/{id}', '\PhpSoft\Users\Controllers\PermissionController@destroy');
+
+    Route::get('/roles', '\PhpSoft\Users\Controllers\RoleController@index');
+    Route::get('/roles/{id}', '\PhpSoft\Users\Controllers\RoleController@show');
+    Route::post('/roles', '\PhpSoft\Users\Controllers\RoleController@store');
+    Route::patch('/roles/{id}', '\PhpSoft\Users\Controllers\RoleController@update');
+    Route::delete('/roles/{id}', '\PhpSoft\Users\Controllers\RoleController@destroy');
 });

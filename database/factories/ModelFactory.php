@@ -35,3 +35,11 @@ $factory->define(PhpSoft\Users\Models\Permission::class, function (Faker\Generat
         'description' => '',
     ];
 });
+
+$factory->define(PhpSoft\Users\Models\Role::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'display_name' => '',
+        'description' => '',
+    ];
+});
