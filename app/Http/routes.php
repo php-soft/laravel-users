@@ -36,4 +36,10 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::patch('/users/{id}', '\PhpSoft\Users\Controllers\UserController@update');
     Route::post('/users/{id}/block', '\PhpSoft\Users\Controllers\UserController@block');
     Route::post('/users/{id}/unblock', '\PhpSoft\Users\Controllers\UserController@unblock');
+
+    Route::get('/permissions', '\PhpSoft\Users\Controllers\PermissionController@index');
+    Route::get('/permissions/{id}', '\PhpSoft\Users\Controllers\PermissionController@show');
+    Route::post('/permissions', '\PhpSoft\Users\Controllers\PermissionController@store');
+    Route::patch('/permissions/{id}', '\PhpSoft\Users\Controllers\PermissionController@update');
+    Route::delete('/permissions/{id}', '\PhpSoft\Users\Controllers\PermissionController@destroy');
 });
