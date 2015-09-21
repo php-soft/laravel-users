@@ -27,3 +27,19 @@ $factory->define(PhpSoft\Users\Models\RoutePermission::class, function (Faker\Ge
         'roles' => '',
     ];
 });
+
+$factory->define(PhpSoft\Users\Models\Permission::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'display_name' => '',
+        'description' => '',
+    ];
+});
+
+$factory->define(PhpSoft\Users\Models\Role::class, function (Faker\Generator $faker) {
+    return [
+        'name' => $faker->name,
+        'display_name' => '',
+        'description' => '',
+    ];
+});

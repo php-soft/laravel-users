@@ -91,10 +91,12 @@ class User extends Model
 
             if (!empty($inFilters)) {
                 foreach ($inFilters as $key) {
-                    $find = $find->where($key, 'LIKE', '%'. $options['filters'][$key] .'%');
+                    $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', '%'. $options['filters'][$key] .'%');
                 }
             }
         }
+
+        $total = $find->count();
 
         if (!empty($options['order'])) {
             foreach ($options['order'] as $field => $direction) {
@@ -104,8 +106,6 @@ class User extends Model
                 $find = $find->orderBy('id', 'DESC');
             }
         }
-
-        $total = $find->count();
 
         if (!empty($options['offset'])) {
             $find = $find->skip($options['offset']);

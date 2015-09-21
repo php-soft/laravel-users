@@ -250,6 +250,12 @@ class UserControllerTest extends TestCase
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals(count($users), count($results->entities));
+
+        // check with value of param is null
+        $res = $this->call('GET', '/users?gender=');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($users), count($results->entities));
     }
 
     public function testBrowseFound()
