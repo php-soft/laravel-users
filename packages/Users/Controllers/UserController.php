@@ -9,7 +9,6 @@ use Validator;
 use App\User as AppUser;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\Role;
-use PhpSoft\Users\Models\RoleUser;
 use PhpSoft\Users\Models\User;
 
 class UserController extends Controller
@@ -229,6 +228,12 @@ class UserController extends Controller
         return response()->json(null, 204);
     }
 
+    /*
+     * assign role
+     * @param  int  $id
+     * @param  Request $request
+     * @return json
+     */
     public function assignRole($id, Request $request)
     {
         $user = AppUser::find($id);
@@ -242,12 +247,14 @@ class UserController extends Controller
         $role = Role::where($field, $roleIdOrName)->first();
 
         if (!$role) {
-            return response()->json(null, 400);
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
+                'errors' => ['Role does not exist.']
+            ]), 400);
         }
 
-        $roleUser = RoleUser::where(['user_id' => $id, 'role_id' => $role->id])->first();
+        $hasRole = $user->hasRole($role->name);
 
-        if ($roleUser) {
+        if ($hasRole) {
             return response()->json(null, 204);
         }
 

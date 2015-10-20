@@ -481,42 +481,39 @@ class UserControllerTest extends TestCase
         $token = JWTAuth::attempt($credentials);
 
         // test invalid user
-        $res = $this->call('POST', '/users/3/role', [
+        $res = $this->call('POST', '/users/3/roles', [
             'roleIdOrName'      => 'post',
         ]);
-
         $this->assertEquals(404, $res->getStatusCode());
 
         // test invalid role
-        $res = $this->call('POST', '/users/1/role', [
+        $res = $this->call('POST', '/users/1/roles', [
             'roleIdOrName'      => 'post',
         ]);
-
         $this->assertEquals(400, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('validation', $results->type);
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('Role does not exist.', $results->message);
 
         // test user already has role
-        $res = $this->call('POST', '/users/1/role', [
+        $res = $this->call('POST', '/users/1/roles', [
             'roleIdOrName'      => 'admin',
         ]);
-
         $this->assertEquals(204, $res->getStatusCode());
 
         // test assign new role with name
         $editor = factory(Role::class)->create(['name' => 'editor']);
-
-        $res = $this->call('POST', '/users/1/role', [
+        $res = $this->call('POST', '/users/1/roles', [
             'roleIdOrName'      => 'editor',
         ]);
-
         $this->assertEquals(204, $res->getStatusCode());
 
-        //test assign new role with id
+        // test assign new role with id
         $superEditor = factory(Role::class)->create(['name' => 'super editor']);
-
-        $res = $this->call('POST', '/users/1/role', [
+        $res = $this->call('POST', '/users/1/roles', [
             'roleIdOrName'      => $superEditor->id,
         ]);
-
         $user = User::find(1);
         $this->assertEquals(204, $res->getStatusCode());
         $this->assertTrue($user->hasRole(['super editor', 'editor', 'admin']));
