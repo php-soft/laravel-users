@@ -8,6 +8,7 @@ use JWTAuth;
 use Validator;
 use App\User as AppUser;
 use Illuminate\Http\Request;
+use PhpSoft\Users\Models\Role;
 use PhpSoft\Users\Models\User;
 
 class UserController extends Controller
@@ -105,7 +106,7 @@ class UserController extends Controller
         }
 
         $updateProfile = $user->update($request->all());
-        
+
         if (!$updateProfile) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
@@ -135,7 +136,7 @@ class UserController extends Controller
         if (!$deleteUser) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
-        
+
         return response()->json(null, 204);
     }
 
@@ -179,7 +180,7 @@ class UserController extends Controller
 
     /**
      * block user
-     * 
+     *
      * @param  int $id
      * @return json
      */
@@ -204,7 +205,7 @@ class UserController extends Controller
 
     /**
      * unblock user
-     * 
+     *
      * @param  int $id
      * @return json
      */
@@ -223,6 +224,41 @@ class UserController extends Controller
         if (!$user->unblock()) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
+
+        return response()->json(null, 204);
+    }
+
+    /*
+     * assign role
+     * @param  int  $id
+     * @param  Request $request
+     * @return json
+     */
+    public function assignRole($id, Request $request)
+    {
+        $user = AppUser::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        $roleIdOrName = $request->roleIdOrName;
+        $field = is_numeric($roleIdOrName) ? 'id' : 'name';
+        $role = Role::where($field, $roleIdOrName)->first();
+
+        if (!$role) {
+            return response()->json(arrayView('phpsoft.users::errors/validation', [
+                'errors' => ['Role does not exist.']
+            ]), 400);
+        }
+
+        $hasRole = $user->hasRole($role->name);
+
+        if ($hasRole) {
+            return response()->json(null, 204);
+        }
+
+        $user->attachRole($role);
 
         return response()->json(null, 204);
     }
