@@ -1,6 +1,7 @@
 <?php
 
 use PhpSoft\Users\Models\User;
+use PhpSoft\Users\Models\Role;
 
 class UserControllerTest extends TestCase
 {
@@ -129,7 +130,7 @@ class UserControllerTest extends TestCase
            'gender'   => 'male',
            'birthday' => '1987',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
-        
+
         $results = json_decode($res->getContent());
         $this->assertEquals('validation', $results->type);
         $this->assertEquals('error', $results->status);
@@ -182,7 +183,7 @@ class UserControllerTest extends TestCase
     public function testDestroyUser()
     {
         // test delete user failure
-        // test invalid user 
+        // test invalid user
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $res = $this->call('DELETE', '/users/3', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
@@ -225,7 +226,7 @@ class UserControllerTest extends TestCase
 
     public function testBrowseFilters()
     {
-        // check list users with filters 
+        // check list users with filters
 
         // check with right params request
         $res = $this->call('GET', '/users?name=Administrator&email=admin@example.com');
@@ -472,5 +473,52 @@ class UserControllerTest extends TestCase
 
         $user = User::find(1);
         $this->assertFalse($user->isBlock());
+    }
+
+    function testAssignRole()
+    {
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+
+        // test invalid user
+        $res = $this->call('POST', '/users/3/role', [
+            'roleIdOrName'      => 'post',
+        ]);
+
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // test invalid role
+        $res = $this->call('POST', '/users/1/role', [
+            'roleIdOrName'      => 'post',
+        ]);
+
+        $this->assertEquals(400, $res->getStatusCode());
+
+        // test user already has role
+        $res = $this->call('POST', '/users/1/role', [
+            'roleIdOrName'      => 'admin',
+        ]);
+
+        $this->assertEquals(204, $res->getStatusCode());
+
+        // test assign new role with name
+        $editor = factory(Role::class)->create(['name' => 'editor']);
+
+        $res = $this->call('POST', '/users/1/role', [
+            'roleIdOrName'      => 'editor',
+        ]);
+
+        $this->assertEquals(204, $res->getStatusCode());
+
+        //test assign new role with id
+        $superEditor = factory(Role::class)->create(['name' => 'super editor']);
+
+        $res = $this->call('POST', '/users/1/role', [
+            'roleIdOrName'      => $superEditor->id,
+        ]);
+
+        $user = User::find(1);
+        $this->assertEquals(204, $res->getStatusCode());
+        $this->assertTrue($user->hasRole(['super editor', 'editor', 'admin']));
     }
 }

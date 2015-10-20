@@ -8,6 +8,8 @@ use JWTAuth;
 use Validator;
 use App\User as AppUser;
 use Illuminate\Http\Request;
+use PhpSoft\Users\Models\Role;
+use PhpSoft\Users\Models\RoleUser;
 use PhpSoft\Users\Models\User;
 
 class UserController extends Controller
@@ -105,7 +107,7 @@ class UserController extends Controller
         }
 
         $updateProfile = $user->update($request->all());
-        
+
         if (!$updateProfile) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
@@ -135,7 +137,7 @@ class UserController extends Controller
         if (!$deleteUser) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
-        
+
         return response()->json(null, 204);
     }
 
@@ -179,7 +181,7 @@ class UserController extends Controller
 
     /**
      * block user
-     * 
+     *
      * @param  int $id
      * @return json
      */
@@ -204,7 +206,7 @@ class UserController extends Controller
 
     /**
      * unblock user
-     * 
+     *
      * @param  int $id
      * @return json
      */
@@ -223,6 +225,33 @@ class UserController extends Controller
         if (!$user->unblock()) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
+
+        return response()->json(null, 204);
+    }
+
+    public function assignRole($id, Request $request)
+    {
+        $user = AppUser::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        $roleIdOrName = $request->roleIdOrName;
+        $field = is_numeric($roleIdOrName) ? 'id' : 'name';
+        $role = Role::where($field, $roleIdOrName)->first();
+
+        if (!$role) {
+            return response()->json(null, 400);
+        }
+
+        $roleUser = RoleUser::where(['user_id' => $id, 'role_id' => $role->id])->first();
+
+        if ($roleUser) {
+            return response()->json(null, 204);
+        }
+
+        $user->attachRole($role);
 
         return response()->json(null, 204);
     }
