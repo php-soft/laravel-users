@@ -64,7 +64,7 @@ class RoleController extends Controller
 
         // update role
         $updateRole = $role->update($request->all());
-        
+
         if (!$updateRole) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
@@ -94,7 +94,7 @@ class RoleController extends Controller
         if (!$deleteRole) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
-        
+
         return response()->json(null, 204);
     }
 

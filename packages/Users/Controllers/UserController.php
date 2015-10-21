@@ -262,4 +262,28 @@ class UserController extends Controller
 
         return response()->json(null, 204);
     }
+
+    /**
+     * get roles of user
+     * @param  int $id
+     * @return list role
+     */
+    public function getRoles($id)
+    {
+        $user = AppUser::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        $roles = $user->getRoles([
+            'order'     => [ Input::get('sort', 'name') => Input::get('direction', 'asc') ],
+            'limit'     => ($limit = (int)Input::get('limit', 25)),
+            'offset'    => (Input::get('page', 1) - 1) * $limit,
+        ]);
+
+        return response()->json(arrayView('phpsoft.users::role/browse', [
+            'roles' => $roles,
+        ]), 200);
+    }
 }

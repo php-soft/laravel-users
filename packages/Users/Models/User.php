@@ -4,6 +4,7 @@ namespace PhpSoft\Users\Models;
 
 use App\User as AppUser;
 use Illuminate\Database\Eloquent\Model;
+use PhpSoft\Users\Models\Role;
 
 class User extends Model
 {
@@ -46,7 +47,7 @@ class User extends Model
 
     /**
      * Create user
-     * 
+     *
      * @param  array  $attributes
      * @return User
      */
@@ -64,7 +65,7 @@ class User extends Model
 
     /**
      * Change password
-     * 
+     *
      * @param  array  $attributes
      * @return User
      */
@@ -77,7 +78,7 @@ class User extends Model
     }
 
     /**
-     * 
+     *
      * @param  array  $options
      * @return array
      */
@@ -129,7 +130,7 @@ class User extends Model
 
     /**
      * set status is block
-     * 
+     *
      * @param  int $status
      * @return int
      */
@@ -141,7 +142,7 @@ class User extends Model
 
     /**
      * set status is non block
-     * 
+     *
      * @param  int $status
      * @return int
      */
@@ -153,12 +154,44 @@ class User extends Model
 
     /**
      * check status is block
-     * 
+     *
      * @param  int  $status
      * @return boolean
      */
     public function isBlock()
     {
         return (User::STATUS_BLOCK)==($this->status & User::STATUS_BLOCK);
+    }
+
+    /**
+     * get all role of user
+     * @return role
+     */
+    public function getRoles($options = [])
+    {
+        $find = $this->roles();
+        $total = $find->count();
+
+        if (!empty($options['order'])) {
+            foreach ($options['order'] as $field => $direction) {
+
+                $find = $find->orderBy($field, $direction);
+            }
+        }
+
+        if (!empty($options['offset'])) {
+            $find = $find->skip($options['offset']);
+        }
+
+        if (!empty($options['limit'])) {
+            $find = $find->take($options['limit']);
+        }
+
+        return [
+            'total'  => $total,
+            'offset' => empty($options['offset']) ? 0 : $options['offset'],
+            'limit'  => empty($options['limit']) ? 0 : $options['limit'],
+            'data'   => $find->get(),
+        ];
     }
 }
