@@ -4,6 +4,7 @@ namespace PhpSoft\Users\Models;
 
 use App\User as AppUser;
 use Illuminate\Database\Eloquent\Model;
+use PhpSoft\Users\Models\Role;
 
 class User extends Model
 {
@@ -46,7 +47,7 @@ class User extends Model
 
     /**
      * Create user
-     * 
+     *
      * @param  array  $attributes
      * @return User
      */
@@ -64,7 +65,7 @@ class User extends Model
 
     /**
      * Change password
-     * 
+     *
      * @param  array  $attributes
      * @return User
      */
@@ -77,7 +78,7 @@ class User extends Model
     }
 
     /**
-     * 
+     *
      * @param  array  $options
      * @return array
      */
@@ -129,7 +130,7 @@ class User extends Model
 
     /**
      * set status is block
-     * 
+     *
      * @param  int $status
      * @return int
      */
@@ -141,7 +142,7 @@ class User extends Model
 
     /**
      * set status is non block
-     * 
+     *
      * @param  int $status
      * @return int
      */
@@ -153,7 +154,7 @@ class User extends Model
 
     /**
      * check status is block
-     * 
+     *
      * @param  int  $status
      * @return boolean
      */

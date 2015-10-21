@@ -64,7 +64,7 @@ class RoleController extends Controller
 
         // update role
         $updateRole = $role->update($request->all());
-        
+
         if (!$updateRole) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
@@ -94,7 +94,7 @@ class RoleController extends Controller
         if (!$deleteRole) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
-        
+
         return response()->json(null, 204);
     }
 
@@ -128,6 +128,31 @@ class RoleController extends Controller
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'offset'    => (Input::get('page', 1) - 1) * $limit,
             'filters'   => $request->all()
+        ]);
+
+        return response()->json(arrayView('phpsoft.users::role/browse', [
+            'roles' => $roles,
+        ]), 200);
+    }
+
+    /**
+     * index
+     * @param  int $id
+     * @return json
+     */
+    public function indexByUser($id)
+    {
+        $user = \App\User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        $roles = Role::browseByUser([
+            'order'     => [ Input::get('sort', 'name') => Input::get('direction', 'asc') ],
+            'limit'     => ($limit = (int)Input::get('limit', 25)),
+            'offset'    => (Input::get('page', 1) - 1) * $limit,
+            'user'      => $user
         ]);
 
         return response()->json(arrayView('phpsoft.users::role/browse', [

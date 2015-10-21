@@ -475,11 +475,8 @@ class UserControllerTest extends TestCase
         $this->assertFalse($user->isBlock());
     }
 
-    function testAssignRole()
+    public function testAssignRole()
     {
-        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
-        $token = JWTAuth::attempt($credentials);
-
         // test invalid user
         $res = $this->call('POST', '/users/3/roles', [
             'roleIdOrName'      => 'post',
@@ -517,5 +514,65 @@ class UserControllerTest extends TestCase
         $user = User::find(1);
         $this->assertEquals(204, $res->getStatusCode());
         $this->assertTrue($user->hasRole(['super editor', 'editor', 'admin']));
+    }
+
+    public function testGetRoles()
+    {
+        // test find not found user
+        $res = $this->call('GET', '/users/5/roles', []);
+        $this->assertEquals(404, $res->getStatusCode());
+
+        // test doesn't have role
+        $user = factory(App\User::class)->create();
+        $res = $this->call('GET', '/users/' . $user->id . '/roles', []);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+
+        // test has role
+        $editor = factory(Role::class)->create(['name' => 'editor1']);
+        $editor = factory(Role::class)->create(['name' => 'editor2']);
+        $editor = factory(Role::class)->create(['name' => 'editor3']);
+        $res = $this->call('POST', '/users/1/roles', [
+            'roleIdOrName'      => 'editor1',
+        ]);
+
+        $res = $this->call('POST', '/users/1/roles', [
+            'roleIdOrName'      => 'editor2',
+        ]);
+
+        $res = $this->call('GET', '/users/1/roles', []);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(3, count($results->entities));
+        $this->assertEquals(1, $results->entities[0]->id);
+        $this->assertEquals(2, $results->entities[1]->id);
+        $this->assertEquals(3, $results->entities[2]->id);
+
+        // test with oder id with desc
+        $res = $this->call('GET', '/users/1/roles?sort=id&direction=desc', []);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(3, count($results->entities));
+        $this->assertEquals(3, $results->entities[0]->id);
+        $this->assertEquals(2, $results->entities[1]->id);
+        $this->assertEquals(1, $results->entities[2]->id);
+
+        // test oder name with desc
+        $res = $this->call('GET', '/users/1/roles?sort=name&direction=desc', []);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(3, count($results->entities));
+        $this->assertEquals('editor2', $results->entities[0]->name);
+        $this->assertEquals('editor1', $results->entities[1]->name);
+        $this->assertEquals('admin', $results->entities[2]->name);
+
+        // test oder name with asc
+        $res = $this->call('GET', '/users/1/roles?sort=name&direction=asc', []);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(3, count($results->entities));
+        $this->assertEquals('admin', $results->entities[0]->name);
+        $this->assertEquals('editor1', $results->entities[1]->name);
+        $this->assertEquals('editor2', $results->entities[2]->name);
     }
 }
