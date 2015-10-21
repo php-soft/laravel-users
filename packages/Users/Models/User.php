@@ -162,36 +162,4 @@ class User extends Model
     {
         return (User::STATUS_BLOCK)==($this->status & User::STATUS_BLOCK);
     }
-
-    /**
-     * get all role of user
-     * @return role
-     */
-    public function getRoles($options = [])
-    {
-        $find = $this->roles();
-        $total = $find->count();
-
-        if (!empty($options['order'])) {
-            foreach ($options['order'] as $field => $direction) {
-
-                $find = $find->orderBy($field, $direction);
-            }
-        }
-
-        if (!empty($options['offset'])) {
-            $find = $find->skip($options['offset']);
-        }
-
-        if (!empty($options['limit'])) {
-            $find = $find->take($options['limit']);
-        }
-
-        return [
-            'total'  => $total,
-            'offset' => empty($options['offset']) ? 0 : $options['offset'],
-            'limit'  => empty($options['limit']) ? 0 : $options['limit'],
-            'data'   => $find->get(),
-        ];
-    }
 }

@@ -134,4 +134,29 @@ class RoleController extends Controller
             'roles' => $roles,
         ]), 200);
     }
+
+    /**
+     * index
+     * @param  int $id
+     * @return json
+     */
+    public function indexByUser($id)
+    {
+        $user = \App\User::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        $roles = Role::browseByUser([
+            'order'     => [ Input::get('sort', 'name') => Input::get('direction', 'asc') ],
+            'limit'     => ($limit = (int)Input::get('limit', 25)),
+            'offset'    => (Input::get('page', 1) - 1) * $limit,
+            'user'      => $user
+        ]);
+
+        return response()->json(arrayView('phpsoft.users::role/browse', [
+            'roles' => $roles,
+        ]), 200);
+    }
 }
