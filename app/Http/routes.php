@@ -23,6 +23,11 @@ Route::group(['middleware'=>'jwt.auth'], function() {
     Route::patch('/me', '\PhpSoft\Users\Controllers\UserController@update');
     Route::put('/me/password', '\PhpSoft\Users\Controllers\PasswordController@change');
 
+    Route::get('/routePermissions', '\PhpSoft\Users\Controllers\RoutePermissionController@index');
+    Route::get('/routePermissions/{id}', '\PhpSoft\Users\Controllers\RoutePermissionController@show');
+    Route::post('/routePermissions', '\PhpSoft\Users\Controllers\RoutePermissionController@store');
+    Route::patch('/routePermissions/{id}', '\PhpSoft\Users\Controllers\RoutePermissionController@update');
+    Route::delete('/routePermissions/{id}', '\PhpSoft\Users\Controllers\RoutePermissionController@destroy');
 });
 
 Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@forgot');
