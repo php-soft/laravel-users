@@ -41,7 +41,7 @@ class Role extends EntrustRole
 
     /**
      * Browse items
-     * 
+     *
      * @param  array  $options
      * @return array
      */
@@ -58,6 +58,38 @@ class Role extends EntrustRole
                     $find = $find->orderBy($field, $direction);
                 }
                 $find = $find->orderBy('id', 'DESC');
+            }
+        }
+
+        if (!empty($options['offset'])) {
+            $find = $find->skip($options['offset']);
+        }
+
+        if (!empty($options['limit'])) {
+            $find = $find->take($options['limit']);
+        }
+
+        return [
+            'total'  => $total,
+            'offset' => empty($options['offset']) ? 0 : $options['offset'],
+            'limit'  => empty($options['limit']) ? 0 : $options['limit'],
+            'data'   => $find->get(),
+        ];
+    }
+
+    /**
+     * get all role of user
+     * @return role
+     */
+    public static function browseByUser($options = [])
+    {
+        $find = $options['user']->roles();
+        $total = $find->count();
+
+        if (!empty($options['order'])) {
+            foreach ($options['order'] as $field => $direction) {
+
+                $find = $find->orderBy($field, $direction);
             }
         }
 
