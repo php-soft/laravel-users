@@ -58,4 +58,3 @@ Route::group(['middleware'=>'routePermission'], function() {
 });
 
 Route::get('/routes', '\PhpSoft\Users\Controllers\RoutePermissionController@getAllRoutes');
-

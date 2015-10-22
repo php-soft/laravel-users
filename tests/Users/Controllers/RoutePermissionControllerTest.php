@@ -312,6 +312,45 @@ class RoutePermissionControllerTest extends TestCase
         }
     }
 
+    public function testBrowseFilters()
+    {
+        $routePermissions = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $routePermissions[] = factory(RoutePermission::class)->create([
+                'route' => '/routes'.$i
+            ]);
+        }
+
+        // check with right params request
+        $res = $this->call('GET', '/routePermissions?route=/routes1');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+
+        $res = $this->call('GET', '/routePermissions?route=%/routes%');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($routePermissions), count($results->entities));
+
+        // check with wrong params request
+        $res = $this->call('GET', '/routePermissions?route=/user');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(0, count($results->entities));
+
+        // check with field what isn't in filters
+        $res = $this->call('GET', '/routePermissions?field=value');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($routePermissions), count($results->entities));
+
+        // check with value of param is null
+        $res = $this->call('GET', '/routePermissions?route=');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($routePermissions), count($results->entities));
+    }
+
     public function testBrowseWithOrderWrongParams()
     {
         $routePermissions = [];

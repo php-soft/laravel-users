@@ -113,7 +113,7 @@ class RoutePermission extends Model
 
             if (!empty($inFilters)) {
                 foreach ($inFilters as $key) {
-                    $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', '%'. $options['filters'][$key] .'%');
+                    $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', $options['filters'][$key]);
                 }
             }
         }

@@ -108,10 +108,10 @@ class RoutePermissionController extends Controller
             ]), 400);
         }
 
-        $request['permissions'] = isset($request['permissions'])?
-        json_encode($request['permissions']) : $routePermission->permissions;
+        $request['permissions'] = isset($request['permissions']) ?
+            json_encode($request['permissions']) : $routePermission->permissions;
         $request['roles'] = isset($request['roles']) ?
-        json_encode($request['roles']) : $routePermission->roles;
+            json_encode($request['roles']) : $routePermission->roles;
 
         // check current user is admin
         if (!(Auth::user() && Auth::user()->hasRole('admin'))) {
@@ -213,7 +213,7 @@ class RoutePermissionController extends Controller
             }
         }
 
-        return response()->json(arrayView('phpsoft.users::partials/route', [
+        return response()->json(arrayView('phpsoft.users::route/browse', [
             'routes' => $results,
         ]), 200);
     }
