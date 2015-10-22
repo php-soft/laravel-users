@@ -445,4 +445,13 @@ class RoutePermissionControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals(0, count($results->entities));
     }
+
+    public function testGetAllRoutes()
+    {
+        $res = $this->call('GET', '/routes');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertObjectHasAttribute('method', $results->entities[0]);
+        $this->assertObjectHasAttribute('uri', $results->entities[0]);
+    }
 }

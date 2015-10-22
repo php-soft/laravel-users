@@ -55,3 +55,6 @@ Route::group(['middleware'=>'routePermission'], function() {
     Route::patch('/roles/{id}', '\PhpSoft\Users\Controllers\RoleController@update');
     Route::delete('/roles/{id}', '\PhpSoft\Users\Controllers\RoleController@destroy');
 });
+
+Route::get('/routes', '\PhpSoft\Users\Controllers\RoutePermissionController@getAllRoutes');
+

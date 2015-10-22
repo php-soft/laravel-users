@@ -3,6 +3,7 @@ namespace PhpSoft\Users\Controllers;
 
 use Auth;
 use Input;
+use Route;
 use Validator;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\Role;
@@ -11,13 +12,7 @@ use PhpSoft\Users\Models\RoutePermission;
 
 class RoutePermissionController extends Controller
 {
-    /**
-     * Create permission action
-     *
-     * @param  Request $request
-     * @return Response
-     */
-    public function store(Request $request)
+    public function registerValidators()
     {
         Validator::extend('rolePermission', function ($attribute, $array) {
 
@@ -26,17 +21,13 @@ class RoutePermissionController extends Controller
             if (is_array($array)) {
                 foreach ($array as $value) {
                     if ($attribute == "roles") {
-                        $role = Role::where('name', $value);
-                        if (!$role->count()) {
-                            $flag = false;
-                            break;
-                        }
+                        $check = Role::where('name', $value);
                     } else {
-                        $permission = Permission::where('name', $value);
-                        if (!$permission->count()) {
-                            $flag = false;
-                            break;
-                        }
+                        $check = Permission::where('name', $value);
+                    }
+                    if (!$check->count()) {
+                        $flag = false;
+                        break;
                     }
                 }
             } else {
@@ -46,6 +37,18 @@ class RoutePermissionController extends Controller
             return $flag;
 
         }, 'Roles or permissions are invalid.');
+    }
+
+    /**
+     * Create route permission action
+     *
+     * @param  Request $request
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        // validate
+        $this->registerValidators();
 
         $validator = Validator::make($request->all(), [
             'route'         => 'required|max:255|string|unique:route_permission,route',
@@ -60,7 +63,7 @@ class RoutePermissionController extends Controller
         }
 
         // check current user is admin
-        if (!( Auth::user() && Auth::user()->hasRole('admin'))) {
+        if (!(Auth::user() && Auth::user()->hasRole('admin'))) {
             return response()->json(null, 403);
         }
 
@@ -90,33 +93,8 @@ class RoutePermissionController extends Controller
             return response()->json(null, 404);
         }
 
-        Validator::extend('rolePermission', function ($attribute, $array) {
-
-            $flag = true;
-
-            if (is_array($array)) {
-                foreach ($array as $value) {
-                    if ($attribute == "roles") {
-                        $role = Role::where('name', $value);
-                        if (!$role->count()) {
-                            $flag = false;
-                            break;
-                        }
-                    } else {
-                        $permission = Permission::where('name', $value);
-                        if (!$permission->count()) {
-                            $flag = false;
-                            break;
-                        }
-                    }
-                }
-            } else {
-                $flag = false;
-            }
-
-            return $flag;
-
-        }, 'Roles or permissions are invalid.');
+        // validate
+        $this->registerValidators();
 
         $validator = Validator::make($request->all(), [
             'route'         => 'sometimes|required|string|max:255|unique:route_permission,route,'.$id,
@@ -136,7 +114,7 @@ class RoutePermissionController extends Controller
         json_encode($request['roles']) : $routePermission->roles;
 
         // check current user is admin
-        if (!( Auth::user() && Auth::user()->hasRole('admin'))) {
+        if (!(Auth::user() && Auth::user()->hasRole('admin'))) {
             return response()->json(null, 403);
         }
 
@@ -163,7 +141,7 @@ class RoutePermissionController extends Controller
         }
 
         // check current user is admin
-        if (!( Auth::user() && Auth::user()->hasRole('admin'))) {
+        if (!(Auth::user() && Auth::user()->hasRole('admin'))) {
             return response()->json(null, 403);
         }
 
@@ -211,6 +189,32 @@ class RoutePermissionController extends Controller
 
         return response()->json(arrayView('phpsoft.users::routePermission/browse', [
             'routePermissions' => $routePermissions,
+        ]), 200);
+    }
+
+	/**
+     * List all routes in app
+     *
+     * @param
+     * @return Response
+     */
+    public function getAllRoutes()
+    {
+        $routes = Route::getRoutes();
+        $results = [];
+
+        if ($routes != null) {
+            foreach ($routes as $route) {
+                $route = array(
+                    'method' => $route->getMethods(),
+                    'uri'    => $route->getPath()
+                );
+                $results[] = (object)$route;
+            }
+        }
+
+        return response()->json(arrayView('phpsoft.users::partials/route', [
+            'routes' => $results,
         ]), 200);
     }
 }
