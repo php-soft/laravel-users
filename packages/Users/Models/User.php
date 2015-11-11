@@ -27,6 +27,8 @@ class User extends Model
      */
     protected $fillable = [
         'name',
+        'email',
+        'password',
         'username',
         'location',
         'country',
@@ -55,12 +57,7 @@ class User extends Model
     {
         $attributes['password'] = bcrypt($attributes['password']);
 
-        $user = new AppUser($attributes);
-        $user->email    = $attributes['email'];
-        $user->password = $attributes['password'];
-        $user->save();
-
-        return $user;
+        return parent::create($attributes)->fresh();
     }
 
     /**
