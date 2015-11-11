@@ -15,12 +15,27 @@ class PermissionControllerTest extends TestCase
         $this->assertEquals('validation', $results->type);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name field is required.', $results->errors->name[0]);
+
+        $res = $this->call('POST', '/permissions', [
+            'name'         => '',
+            'display_name' => ''
+        ]);
+
+        $this->assertEquals(400, $res->getStatusCode());
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('validation', $results->type);
+        $this->assertObjectHasAttribute('name', $results->errors);
+        $this->assertEquals('The name field is required.', $results->errors->name[0]);
+        $this->assertEquals('The display name field is required.', $results->errors->display_name[0]);
     }
 
     public function testCreateSuccess()
     {
         $res = $this->call('POST', '/permissions', [
-            'name' => 'Manager',
+            'name'         => 'Manager',
+            'display_name' => 'The person manage other people.'
         ]);
 
         $this->assertEquals(201, $res->getStatusCode());
@@ -74,6 +89,15 @@ class PermissionControllerTest extends TestCase
         $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('The name has already been taken.', $results->errors->name[0]);
+
+        $res = $this->call('PATCH', '/permissions/' . $permission1->id, [
+            'name'         => '',
+            'display_name' => ''
+        ]);
+        $this->assertEquals(400, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('The name field is required.', $results->errors->name[0]);
+        $this->assertEquals('The display name field is required.', $results->errors->display_name[0]);
     }
 
     public function testUpdateNothingChange()

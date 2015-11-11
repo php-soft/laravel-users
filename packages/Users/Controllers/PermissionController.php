@@ -17,8 +17,8 @@ class PermissionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'         => 'required|max:255|unique:permissions',
-            'display_name' => 'max:255',
+            'name'         => 'required|string|max:255|unique:permissions',
+            'display_name' => 'required|string|max:255',
             'description'  => 'max:1000'
         ]);
 
@@ -44,8 +44,8 @@ class PermissionController extends Controller
     {
         // validate data
         $validator = Validator::make($request->all(), [
-            'name'         => 'max:255|unique:permissions,name,'.$id,
-            'display_name' => 'max:255',
+            'name'         => 'sometimes|required|string|max:255|unique:permissions,name,'.$id,
+            'display_name' => 'sometimes|required|string|max:255',
             'description'  => 'max:1000'
         ]);
 
@@ -64,7 +64,7 @@ class PermissionController extends Controller
 
         // update permission
         $updatePermission = $permission->update($request->all());
-        
+
         if (!$updatePermission) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
@@ -94,7 +94,7 @@ class PermissionController extends Controller
         if (!$deletePermission) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
-        
+
         return response()->json(null, 204);
     }
 

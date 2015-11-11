@@ -121,6 +121,11 @@ class UserControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
 
+        $results = json_decode($res->getContent());
+        $this->assertEquals(400, $res->getStatusCode());
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('authenticate', $results->type);
+
         // test invalid validate input
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
@@ -138,6 +143,14 @@ class UserControllerTest extends TestCase
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
         $this->assertEquals('The gender must be an integer.', $results->errors->gender[0]);
         $this->assertEquals('The birthday is not a valid date.', $results->errors->birthday[0]);
+
+        $res = $this->call('PATCH', '/me', [
+           'name'     => '',
+        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+
+        $results = json_decode($res->getContent());
+        $this->assertEquals(400, $res->getStatusCode());
+        $this->assertEquals('The name field is required.', $results->errors->name[0]);
 
         // test update user by id
         $res = $this->call('PATCH', '/users/12');

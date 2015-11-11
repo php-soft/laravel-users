@@ -38,16 +38,16 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'       => 'required|max:255',
+            'name'       => 'required|string|max:255',
             'email'      => 'required|email|max:255|unique:users',
-            'password'   => 'required|confirmed|min:6',
-            'username'   => 'max:30',
-            'country'    => 'max:100',
-            'location'   => 'max:100',
-            'biography'  => 'max:255',
-            'occupation' => 'max:255',
-            'website'    => 'max:255',
-            'image'      => 'max:255',
+            'password'   => 'required|string|confirmed|min:6',
+            'username'   => 'string|max:30',
+            'country'    => 'string|max:100',
+            'location'   => 'string|max:100',
+            'biography'  => 'string|max:255',
+            'occupation' => 'string|max:255',
+            'website'    => 'string|max:255',
+            'image'      => 'string|max:255',
             'gender'     => 'integer',
             'birthday'   => 'date'
         ]);
@@ -79,14 +79,14 @@ class UserController extends Controller
 
         // validate data
         $validator = Validator::make($request->all(), [
-            'name'       => 'max:255',
-            'username'   => 'max:30',
-            'country'    => 'max:100',
-            'location'   => 'max:100',
-            'biography'  => 'max:255',
-            'occupation' => 'max:255',
-            'website'    => 'max:255',
-            'image'      => 'max:255',
+            'name'       => 'sometimes|required|string|max:255',
+            'username'   => 'string|max:30',
+            'country'    => 'string|max:100',
+            'location'   => 'string|max:100',
+            'biography'  => 'string|max:255',
+            'occupation' => 'string|max:255',
+            'website'    => 'string|max:255',
+            'image'      => 'string|max:255',
             'gender'     => 'integer',
             'birthday'   => 'date'
         ]);
