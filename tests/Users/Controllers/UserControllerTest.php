@@ -269,6 +269,19 @@ class UserControllerTest extends TestCase
         $results = json_decode($res->getContent());
         $this->assertEquals(0, count($results->entities));
 
+        // check fiter with number
+        $user = factory(App\User::class)->create(['gender' => 1]);
+        $user = factory(App\User::class)->create(['gender' => 11]);
+        $res = $this->call('GET', '/users?gender=1');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+
+        $res = $this->call('GET', '/users?gender=%1%');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(2, count($results->entities));
+
         // check with params not in filters
         $removeAllUsers = App\User::truncate();
 
