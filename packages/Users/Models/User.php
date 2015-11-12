@@ -104,10 +104,8 @@ class User extends Model
         if (!empty($options['filters'])) {
             $inFilters = array_intersect($fillable, array_keys($options['filters']));
 
-            if (!empty($inFilters)) {
-                foreach ($inFilters as $key) {
-                    $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', '%'. $options['filters'][$key] .'%');
-                }
+            foreach ($inFilters as $key) {
+                $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', $options['filters'][$key]);
             }
         }
 
@@ -118,8 +116,9 @@ class User extends Model
                 if (in_array($field, $fillable)) {
                     $find = $find->orderBy($field, $direction);
                 }
-                $find = $find->orderBy('id', 'DESC');
             }
+
+            $find = $find->orderBy('id', 'DESC');
         }
 
         if (!empty($options['offset'])) {
