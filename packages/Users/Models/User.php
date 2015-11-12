@@ -64,6 +64,21 @@ class User extends Model
     }
 
     /**
+     * Update the model in the database.
+     *
+     * @param  array  $attributes
+     * @return bool|int
+     */
+    public function update(array $attributes = [])
+    {
+        if (!parent::update($attributes)) {
+            throw new Exception('Cannot update user.'); // @codeCoverageIgnore
+        }
+
+        return $this->fresh();
+    }
+
+    /**
      * Change password
      *
      * @param  array  $attributes
