@@ -17,7 +17,6 @@ class RoleControllerTest extends TestCase
 
         $res = $this->call('POST', '/roles', [
             'name'         => '',
-            'display_name' => ''
         ]);
 
         $this->assertEquals(400, $res->getStatusCode());
@@ -26,7 +25,6 @@ class RoleControllerTest extends TestCase
         $this->assertEquals('validation', $results->type);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name field is required.', $results->errors->name[0]);
-        $this->assertEquals('The display name field is required.', $results->errors->display_name[0]);
     }
 
     public function testCreateSuccess()
@@ -90,12 +88,10 @@ class RoleControllerTest extends TestCase
 
         $res = $this->call('PATCH', '/roles/' . $role1->id, [
             'name'         => '',
-            'display_name' => ''
         ]);
         $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('The name field is required.', $results->errors->name[0]);
-        $this->assertEquals('The display name field is required.', $results->errors->display_name[0]);
     }
 
     public function testUpdateNothingChange()
