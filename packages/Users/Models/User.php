@@ -66,6 +66,21 @@ class User extends Model
     }
 
     /**
+     * Update the model in the database.
+     *
+     * @param  array  $attributes
+     * @return bool|int
+     */
+    public function update(array $attributes = [])
+    {
+        if (!parent::update($attributes)) {
+            throw new Exception('Cannot update user.'); // @codeCoverageIgnore
+        }
+
+        return $this->fresh();
+    }
+
+    /**
      * Change password
      *
      * @param  array  $attributes
@@ -73,10 +88,9 @@ class User extends Model
      */
     public function changePassword($newPassword)
     {
-        $user = $this;
-        $user['password'] = bcrypt($newPassword);
+        $this->password = bcrypt($newPassword);
 
-        return $user->save();
+        return $this->save();
     }
 
     /**
@@ -92,10 +106,8 @@ class User extends Model
         if (!empty($options['filters'])) {
             $inFilters = array_intersect($fillable, array_keys($options['filters']));
 
-            if (!empty($inFilters)) {
-                foreach ($inFilters as $key) {
-                    $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', '%'. $options['filters'][$key] .'%');
-                }
+            foreach ($inFilters as $key) {
+                $find = ($options['filters'][$key] == null) ? $find : $find->where($key, 'LIKE', $options['filters'][$key]);
             }
         }
 
@@ -106,8 +118,9 @@ class User extends Model
                 if (in_array($field, $fillable)) {
                     $find = $find->orderBy($field, $direction);
                 }
-                $find = $find->orderBy('id', 'DESC');
             }
+
+            $find = $find->orderBy('id', 'DESC');
         }
 
         if (!empty($options['offset'])) {
