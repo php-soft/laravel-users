@@ -27,6 +27,8 @@ class User extends Model
      */
     protected $fillable = [
         'name',
+        'email',
+        'password',
         'username',
         'location',
         'country',
@@ -61,6 +63,24 @@ class User extends Model
         $user->save();
 
         return $user;
+    }
+
+    /**
+     * Update the model in the database.
+     *
+     * @param  array  $attributes
+     * @return bool|int
+     */
+    public function update(array $attributes = [])
+    {
+        if (isset($attributes['password'])) {
+            $attributes['password'] = bcrypt($attributes['password']);
+        }
+
+        if (!parent::update($attributes)) {
+            throw new Exception('Cannot update user.'); // @codeCoverageIgnore
+        }
+        return $this->fresh();
     }
 
     /**

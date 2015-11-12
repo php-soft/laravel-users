@@ -1,5 +1,6 @@
 <?php
 
+use App\User as AppUser;
 use PhpSoft\Users\Models\User;
 use PhpSoft\Users\Models\Role;
 
@@ -129,8 +130,11 @@ class UserControllerTest extends TestCase
            'name'     => $name,
            'gender'   => 'male',
            'birthday' => '1987',
+           'email'    => 'email',
+           'password' => 'password'
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
+        $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('validation', $results->type);
         $this->assertEquals('error', $results->status);
@@ -138,6 +142,25 @@ class UserControllerTest extends TestCase
         $this->assertEquals('The name may not be greater than 255 characters.', $results->message);
         $this->assertEquals('The gender must be an integer.', $results->errors->gender[0]);
         $this->assertEquals('The birthday is not a valid date.', $results->errors->birthday[0]);
+        $this->assertEquals('The email must be a valid email address.', $results->errors->email[0]);
+        $this->assertEquals('The old password and password are required or the old password is incorrect.', $results->errors->password[0]);
+
+        $user = factory(AppUser::class)->create(['email' => 'email@gmail.com']);
+
+        $res = $this->call('PATCH', '/me', [
+           'name'         => 'Admin',
+           'gender'       => 1,
+           'birthday'     => '2015-01-01',
+           'email'        => 'email@gmail.com',
+           'old_password' => '123456789',
+           'password'     => 'password'
+        ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(400, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('validation', $results->type);
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('The email has already been taken.', $results->errors->email[0]);
+        $this->assertEquals('The old password and password are required or the old password is incorrect.', $results->errors->old_password[0]);
 
         // test update user by id
         $res = $this->call('PATCH', '/users/12');
@@ -149,11 +172,15 @@ class UserControllerTest extends TestCase
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $res = $this->call('PATCH', '/me', [
-            'name'     => 'Steven Adam',
-            'country'  => 'USA',
-            'location' => '',
-            'gender'   => 1,
-            'birthday' => '1987-09-05'
+            'name'                  => 'Steven Adam',
+            'country'               => 'USA',
+            'location'              => '',
+            'gender'                => 1,
+            'birthday'              => '1987-09-05',
+            'email'                 => 'email@gmail.com',
+            'old_password'          => '123456',
+            'password'              => 'password',
+            'password_confirmation' => 'password',
         ],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $results = json_decode($res->getContent());
@@ -164,8 +191,10 @@ class UserControllerTest extends TestCase
         $user = \App\User::find($userId);
         $this->assertEquals('Steven Adam', $user->name);
         $this->assertEquals('USA', $user->country);
-        $this->assertEquals('admin@example.com', $user->email);
+        $this->assertEquals('email@gmail.com', $user->email);
         $this->assertEquals('', $user->location);
+        $checkPassword = Auth::attempt(['id' => 1, 'password' => 'password']);
+        $this->assertTrue($checkPassword);
         $this->assertEquals('greenglobal.vn', $user->website);
 
         // test update user by id
@@ -250,7 +279,7 @@ class UserControllerTest extends TestCase
         $res = $this->call('GET', '/users?password=password');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals(count($users), count($results->entities));
+        $this->assertEquals(0, count($results->entities));
 
         // check with value of param is null
         $res = $this->call('GET', '/users?gender=');

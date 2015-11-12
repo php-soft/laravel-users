@@ -28,6 +28,8 @@ class User extends PhpSoftUser implements AuthenticatableContract, CanResetPassw
      */
     protected $fillable = [
         'name',
+        'email',
+        'password',
         'username',
         'location',
         'country',

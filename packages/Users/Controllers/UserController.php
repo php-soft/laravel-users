@@ -30,6 +30,33 @@ class UserController extends Controller
     }
 
     /**
+     * Register validate
+     *
+     * @param  Request $request
+     * @return boolean
+     */
+    public function registerValidators()
+    {
+        Validator::extend('changePassword', function ($attribute, $code, $parameters, $validator) {
+
+            $input = $validator->getData();
+
+            if (isset($input['old_password']) && isset($input['password'])) {
+
+                $user = isset($input['id']) ? AppUser::find($input['id']) : Auth::user();
+                $checkOldPassword = Auth::attempt(['id' => $user->id, 'password' => $input['old_password']]);
+
+                if ($checkOldPassword) {
+                    return true;
+                }
+            }
+
+            return false;
+
+        }, 'The old password and password are required or the old password is incorrect.');
+    }
+
+    /**
      * Create user action
      *
      * @param  Request $request
@@ -72,23 +99,37 @@ class UserController extends Controller
      */
     public function update(Request $request, $id = null)
     {
+        // validate
+        $this->registerValidators();
+
         // check auth if update me
         if (!$id && !$this->checkAuth()) {
             return response()->json(null, 401);
         }
 
+        // check user
+        $user = $id ? AppUser::find($id) : Auth::user();
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        $request->id = $id;
         // validate data
         $validator = Validator::make($request->all(), [
-            'name'       => 'max:255',
-            'username'   => 'max:30',
-            'country'    => 'max:100',
-            'location'   => 'max:100',
-            'biography'  => 'max:255',
-            'occupation' => 'max:255',
-            'website'    => 'max:255',
-            'image'      => 'max:255',
-            'gender'     => 'integer',
-            'birthday'   => 'date'
+            'name'         => 'sometimes|required|max:255',
+            'email'        => 'sometimes|required|email|max:255|unique:users,email,'.$user->id,
+            'old_password' => 'sometimes|required|changePassword|min:6',
+            'password'     => 'sometimes|required|changePassword|confirmed|min:6',
+            'username'     => 'string|max:30',
+            'country'      => 'string|max:100',
+            'location'     => 'string|max:100',
+            'biography'    => 'string|max:255',
+            'occupation'   => 'string|max:255',
+            'website'      => 'string|max:255',
+            'image'        => 'string|max:255',
+            'gender'       => 'integer',
+            'birthday'     => 'date'
         ]);
 
         if ($validator->fails()) {
@@ -97,17 +138,10 @@ class UserController extends Controller
             ]), 400);
         }
 
-        // check user
-        $user = $id ? AppUser::find($id) : Auth::user();
-
         // Update profile
+        $user = $user->update($request->all());
+
         if (!$user) {
-            return response()->json(null, 404);
-        }
-
-        $updateProfile = $user->update($request->all());
-
-        if (!$updateProfile) {
             return response()->json(null, 500); // @codeCoverageIgnore
         }
 
