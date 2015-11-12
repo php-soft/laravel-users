@@ -71,10 +71,9 @@ class User extends Model
      */
     public function changePassword($newPassword)
     {
-        $user = $this;
-        $user['password'] = bcrypt($newPassword);
+        $this->password = bcrypt($newPassword);
 
-        return $user->save();
+        return $this->save();
     }
 
     /**
