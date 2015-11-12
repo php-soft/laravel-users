@@ -73,6 +73,7 @@ class User extends Model
      */
     public function update(array $attributes = [])
     {
+<<<<<<< HEAD
         if (isset($attributes['password'])) {
             $attributes['password'] = bcrypt($attributes['password']);
         }
@@ -80,6 +81,12 @@ class User extends Model
         if (!parent::update($attributes)) {
             throw new Exception('Cannot update user.'); // @codeCoverageIgnore
         }
+=======
+        if (!parent::update($attributes)) {
+            throw new Exception('Cannot update user.'); // @codeCoverageIgnore
+        }
+
+>>>>>>> c232fee0dda0aa1022f34147a4dad1df81049c58
         return $this->fresh();
     }
 
@@ -91,20 +98,13 @@ class User extends Model
      */
     public function changePassword($newPassword)
     {
-        $user = $this;
-        $user['password'] = bcrypt($newPassword);
+        $this->password = bcrypt($newPassword);
 
-        return $user->save();
+        return $this->save();
     }
 
-    /**
-     *
-     * @param  array  $options
-     * @return array
-     */
-    public static function browse($options = [])
+    public function filter($options = [])
     {
-        $find = new AppUser();
         $fillable = $find->fillable;
 
         if (!empty($options['filters'])) {
@@ -146,6 +146,17 @@ class User extends Model
             'limit'  => empty($options['limit']) ? 0 : $options['limit'],
             'data'   => $find->get(),
         ];
+    }
+
+    /**
+     *
+     * @param  array  $options
+     * @return array
+     */
+    public static function browse($options = [], $className = __CLASS__)
+    {
+        $find = new User();
+        return $find->filter($options);
     }
 
     /**
