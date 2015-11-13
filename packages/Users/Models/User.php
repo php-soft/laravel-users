@@ -87,14 +87,15 @@ class User extends Model
         return $this->fresh();
     }
 
+
     /**
      *
      * @param  array  $options
      * @return array
      */
-    public static function browse($options = [], $className = __CLASS__)
+    public static function browse($options = [])
     {
-        $find = new User();
+        $find = new AppUser();
         $fillable = $find->fillable;
 
         if (!empty($options['filters'])) {
