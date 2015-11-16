@@ -2,17 +2,24 @@
 
 namespace PhpSoft\Users\Controllers;
 
-use Input;
 use Auth;
+use Config;
+use Input;
 use JWTAuth;
 use Validator;
-use App\User as AppUser;
 use Illuminate\Http\Request;
 use PhpSoft\Users\Models\Role;
 use PhpSoft\Users\Models\User;
 
 class UserController extends Controller
 {
+    private $className;
+
+    public function __construct()
+    {
+        $this->className = Config::get('phpsoft.user.model');
+    }
+
     /**
      * Display the specified resource.
      *
@@ -58,7 +65,9 @@ class UserController extends Controller
             ]), 400);
         }
 
-        $user = AppUser::create($request->all());
+        $className = $this->className;
+
+        $user = $className::create($request->all());
 
         return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
@@ -97,8 +106,10 @@ class UserController extends Controller
             ]), 400);
         }
 
+        $className = $this->className;
+
         // check user
-        $user = $id ? AppUser::find($id) : Auth::user();
+        $user = $id ? $className::find($id) : Auth::user();
 
         // Update profile
         if (!$user) {
@@ -119,8 +130,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $className = $this->className;
+
         // get user by id
-        $user = AppUser::find($id);
+        $user = $className::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -143,8 +156,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $className = $this->className;
+
         // get user by id
-        $user = AppUser::find($id);
+        $user = $className::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -161,7 +176,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = AppUser::browse([
+        $className = $this->className;
+
+        $users = $className::browse([
             'order'     => [ Input::get('sort', 'id') => Input::get('direction', 'desc') ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),
@@ -182,7 +199,9 @@ class UserController extends Controller
      */
     public function block($id)
     {
-        $user = AppUser::find($id);
+        $className = $this->className;
+
+        $user = $className::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -207,7 +226,9 @@ class UserController extends Controller
      */
     public function unblock($id)
     {
-        $user = AppUser::find($id);
+        $className = $this->className;
+
+        $user = $className::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -232,7 +253,9 @@ class UserController extends Controller
      */
     public function assignRole($id, Request $request)
     {
-        $user = AppUser::find($id);
+        $className = $this->className;
+
+        $user = $className::find($id);
 
         if (!$user) {
             return response()->json(null, 404);

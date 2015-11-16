@@ -24,6 +24,7 @@ class UserServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/jwt.php' => config_path('jwt.php'),
             __DIR__ . '/../config/entrust.php' => config_path('entrust.php'),
+            __DIR__ . '/../config/phpsoft.user.php' => config_path('phpsoft.user.php'),
         ]);
 
         // Register commands
