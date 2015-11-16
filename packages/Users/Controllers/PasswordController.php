@@ -16,8 +16,8 @@ class PasswordController extends Controller
 
     /**
      * Forgot password
-     * 
-     * @param  Request $request 
+     *
+     * @param  Request $request
      * @return json
      */
     public function forgot(Request $request)
@@ -44,15 +44,15 @@ class PasswordController extends Controller
 
     /**
      * Reset password
-     * 
+     *
      * @param  Request $request
      * @return json
      */
     public function reset(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'token' => 'required',
-            'email' => 'required|email',
+            'token'    => 'required',
+            'email'    => 'required|email',
             'password' => 'required|confirmed|min:6',
         ]);
 
