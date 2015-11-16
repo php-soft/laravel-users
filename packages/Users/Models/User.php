@@ -57,7 +57,10 @@ class User extends Model
     {
         $attributes['password'] = bcrypt($attributes['password']);
 
-        return parent::create($attributes)->fresh();
+        $user = new AppUser($attributes);
+        $user->save();
+
+        return $user;
     }
 
     /**
