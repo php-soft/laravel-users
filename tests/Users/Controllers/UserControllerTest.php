@@ -255,17 +255,12 @@ class UserControllerTest extends TestCase
 
         // check with params not in filters
         $removeAllUsers = App\User::truncate();
+        // check with value of param is null
 
         for ($i = 0; $i < 10; ++$i) {
             $users[] = factory(App\User::class)->create();
         }
 
-        $res = $this->call('GET', '/users?password=password');
-        $this->assertEquals(200, $res->getStatusCode());
-        $results = json_decode($res->getContent());
-        $this->assertEquals(count($users), count($results->entities));
-
-        // check with value of param is null
         $res = $this->call('GET', '/users?gender=');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
