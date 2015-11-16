@@ -13,11 +13,11 @@ use PhpSoft\Users\Models\User;
 
 class UserController extends Controller
 {
-    private $className;
+    private $userModel;
 
     public function __construct()
     {
-        $this->className = Config::get('phpsoft.user.model');
+        $this->userModel = config('phpsoft.user.model');
     }
 
     /**
@@ -65,9 +65,9 @@ class UserController extends Controller
             ]), 400);
         }
 
-        $className = $this->className;
+        $userModel = $this->userModel;
 
-        $user = $className::create($request->all());
+        $user = $userModel::create($request->all());
 
         return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
@@ -106,10 +106,10 @@ class UserController extends Controller
             ]), 400);
         }
 
-        $className = $this->className;
+        $userModel = $this->userModel;
 
         // check user
-        $user = $id ? $className::find($id) : Auth::user();
+        $user = $id ? $userModel::find($id) : Auth::user();
 
         // Update profile
         if (!$user) {
@@ -130,10 +130,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $className = $this->className;
+        $userModel = $this->userModel;
 
         // get user by id
-        $user = $className::find($id);
+        $user = $userModel::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -156,10 +156,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $className = $this->className;
+        $userModel = $this->userModel;
 
         // get user by id
-        $user = $className::find($id);
+        $user = $userModel::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -176,9 +176,9 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $className = $this->className;
+        $userModel = $this->userModel;
 
-        $users = $className::browse([
+        $users = $userModel::browse([
             'order'     => [ Input::get('sort', 'id') => Input::get('direction', 'desc') ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),
@@ -199,9 +199,9 @@ class UserController extends Controller
      */
     public function block($id)
     {
-        $className = $this->className;
+        $userModel = $this->userModel;
 
-        $user = $className::find($id);
+        $user = $userModel::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -226,9 +226,9 @@ class UserController extends Controller
      */
     public function unblock($id)
     {
-        $className = $this->className;
+        $userModel = $this->userModel;
 
-        $user = $className::find($id);
+        $user = $userModel::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
@@ -253,9 +253,9 @@ class UserController extends Controller
      */
     public function assignRole($id, Request $request)
     {
-        $className = $this->className;
+        $userModel = $this->userModel;
 
-        $user = $className::find($id);
+        $user = $userModel::find($id);
 
         if (!$user) {
             return response()->json(null, 404);
