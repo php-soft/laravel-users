@@ -122,6 +122,11 @@ class UserControllerTest extends TestCase
         $this->assertEquals('error', $results->status);
         $this->assertEquals('authenticate', $results->type);
 
+        $results = json_decode($res->getContent());
+        $this->assertEquals(400, $res->getStatusCode());
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('authenticate', $results->type);
+
         // test invalid validate input
         $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
@@ -284,6 +289,7 @@ class UserControllerTest extends TestCase
 
         // check with params not in filters
         $removeAllUsers = App\User::truncate();
+        // check with value of param is null
 
         for ($i = 0; $i < 10; ++$i) {
             $users[] = factory(App\User::class)->create();

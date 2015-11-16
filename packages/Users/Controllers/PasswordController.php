@@ -72,8 +72,8 @@ class PasswordController extends Controller
     public function reset(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'token' => 'required',
-            'email' => 'required|email',
+            'token'    => 'required',
+            'email'    => 'required|email',
             'password' => 'required|confirmed|min:6',
         ]);
 

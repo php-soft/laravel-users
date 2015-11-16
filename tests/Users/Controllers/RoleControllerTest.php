@@ -14,12 +14,24 @@ class RoleControllerTest extends TestCase
         $this->assertEquals('validation', $results->type);
         $this->assertObjectHasAttribute('name', $results->errors);
         $this->assertEquals('The name field is required.', $results->errors->name[0]);
+
+        $res = $this->call('POST', '/roles', [
+            'name'         => '',
+        ]);
+
+        $this->assertEquals(400, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('error', $results->status);
+        $this->assertEquals('validation', $results->type);
+        $this->assertObjectHasAttribute('name', $results->errors);
+        $this->assertEquals('The name field is required.', $results->errors->name[0]);
     }
 
     public function testCreateSuccess()
     {
         $res = $this->call('POST', '/roles', [
-            'name' => 'Create post',
+            'name'         => 'Create post',
+            'display_name' => 'Post article.'
         ]);
 
         $this->assertEquals(201, $res->getStatusCode());
@@ -73,6 +85,13 @@ class RoleControllerTest extends TestCase
         $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('The name has already been taken.', $results->errors->name[0]);
+
+        $res = $this->call('PATCH', '/roles/' . $role1->id, [
+            'name'         => '',
+        ]);
+        $this->assertEquals(400, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals('The name field is required.', $results->errors->name[0]);
     }
 
     public function testUpdateNothingChange()
