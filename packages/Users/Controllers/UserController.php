@@ -105,11 +105,7 @@ class UserController extends Controller
             return response()->json(null, 404);
         }
 
-        $updateProfile = $user->update($request->all());
-
-        if (!$updateProfile) {
-            return response()->json(null, 500); // @codeCoverageIgnore
-        }
+        $user = $user->update($request->all());
 
         return response()->json(arrayView('phpsoft.users::user/read', [
             'user' => $user
