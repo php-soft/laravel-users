@@ -264,7 +264,7 @@ class UserControllerTest extends TestCase
         $res = $this->call('GET', '/users?gender=');
         $this->assertEquals(200, $res->getStatusCode());
         $results = json_decode($res->getContent());
-        $this->assertEquals(count($users)+1, count($results->entities));
+        $this->assertEquals(count($users), count($results->entities));
     }
 
     public function testBrowseFound()
