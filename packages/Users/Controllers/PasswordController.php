@@ -15,6 +15,27 @@ class PasswordController extends Controller
     use ResetsPasswords;
 
     /**
+     * Register validate
+     *
+     * @param  Request $request
+     * @return boolean
+     */
+    public function registerValidators()
+    {
+        Validator::extend('oldPassword', function ($attribute, $value, $parameters) {
+
+            $checkOldPassword = Auth::attempt(['id' => Auth::user()->id, 'password' => $value]);
+
+            if (!$checkOldPassword) {
+                return false;
+            }
+
+            return true;
+
+        }, 'The old password is incorrect.');
+    }
+
+    /**
      * Forgot password
      *
      * @param  Request $request
@@ -84,12 +105,15 @@ class PasswordController extends Controller
      */
     public function change(Request $request)
     {
+        // register validate
+        $this->registerValidators();
+
         if (!$this->checkAuth()) {
             return response()->json(null, 401);
         }
 
         $validator = Validator::make($request->all(), [
-            'old_password' => 'required|min:6',
+            'old_password' => 'required|min:6|oldPassword',
             'password'     => 'required|confirmed|min:6',
         ]);
 
@@ -100,14 +124,8 @@ class PasswordController extends Controller
         }
 
         $user = Auth::user();
-        $checkPassword = Auth::attempt(['id' => $user->id, 'password' => $request['old_password']]);
-        if (!$checkPassword) {
-            return response()->json(arrayView('phpsoft.users::errors/validation', [
-                'errors' => ['Old password is incorrect.']
-            ]), 401);
-        }
 
-        $change = $user->changePassword($request['password']);
+        $change = $user->update(['password' => $request->password]);
 
         if (!$change) {
             return response()->json(null, 500); // @codeCoverageIgnore

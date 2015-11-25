@@ -71,6 +71,13 @@ class User extends Model
      */
     public function update(array $attributes = [])
     {
+        if (isset($attributes['password'])) {
+            $attributes['password'] = bcrypt($attributes['password']);
+        }
+
+        if (!parent::update($attributes)) {
+            throw new Exception('Cannot update user.'); // @codeCoverageIgnore
+        }
         if (!parent::update($attributes)) {
             throw new Exception('Cannot update user.'); // @codeCoverageIgnore
         }
@@ -78,18 +85,6 @@ class User extends Model
         return $this->fresh();
     }
 
-    /**
-     * Change password
-     *
-     * @param  array  $attributes
-     * @return User
-     */
-    public function changePassword($newPassword)
-    {
-        $this->password = bcrypt($newPassword);
-
-        return $this->save();
-    }
 
     /**
      *

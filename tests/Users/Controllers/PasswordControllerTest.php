@@ -30,7 +30,7 @@ class PasswordControllerTest extends TestCase
     public function testResetPasswordFailure()
     {
         // check validate input
- 
+
         // check input is empty
         $checkResetPassword = $this->call('POST','/passwords/reset');
         $this->assertEquals(400, $checkResetPassword->getStatusCode());
@@ -138,10 +138,10 @@ class PasswordControllerTest extends TestCase
             'password'              => '12345678',
             'password_confirmation' => '12345678'
         ], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
-        $this->assertEquals(401, $res->getStatusCode());
+        $this->assertEquals(400, $res->getStatusCode());
         $results = json_decode($res->getContent());
         $this->assertEquals('error', $results->status);
-        $this->assertEquals("Old password is incorrect.", $results->message);
+        $this->assertEquals("The old password is incorrect.", $results->message);
         $this->assertEquals('validation', $results->type);
 
         // Change password success
@@ -151,5 +151,7 @@ class PasswordControllerTest extends TestCase
             'password_confirmation' => '12345678'
         ], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(204, $res->getStatusCode());
+        $checkPassword = Auth::attempt(['id' => 1, 'password' => '12345678']);
+        $this->assertTrue($checkPassword);
     }
 }
