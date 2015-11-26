@@ -55,7 +55,7 @@ class User extends Model
      */
     public static function create(array $attributes = [])
     {
-        $userModel = config('phpsoft.user.model');
+        $userModel = config('phpsoft.users.model');
         $attributes['password'] = bcrypt($attributes['password']);
 
         $user = new $userModel($attributes);
@@ -99,7 +99,7 @@ class User extends Model
      */
     public static function browse($options = [])
     {
-        $userModel = config('phpsoft.user.model');
+        $userModel = config('phpsoft.users.model');
 
         $find = new $userModel;
         $fillable = $find->fillable;

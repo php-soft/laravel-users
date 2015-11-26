@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->userModel = config('phpsoft.user.model');
+        $this->userModel = config('phpsoft.users.model');
     }
 
     /**
@@ -66,7 +66,6 @@ class UserController extends Controller
         }
 
         $userModel = $this->userModel;
-
         $user = $userModel::create($request->all());
 
         return response()->json(arrayView('phpsoft.users::user/read', [

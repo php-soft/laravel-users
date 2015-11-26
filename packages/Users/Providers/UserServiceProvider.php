@@ -24,7 +24,7 @@ class UserServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/jwt.php' => config_path('jwt.php'),
             __DIR__ . '/../config/entrust.php' => config_path('entrust.php'),
-            __DIR__ . '/../config/phpsoft.user.php' => config_path('phpsoft.user.php'),
+            __DIR__ . '/../config/phpsoft.users.php' => config_path('phpsoft.users.php'),
         ]);
 
         // Register commands
@@ -38,6 +38,10 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/phpsoft.users.php', 'phpsoft.users'
+        );
+
         $this->registerCommands();
     }
 
