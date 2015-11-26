@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/php-soft/laravel-users.svg)](https://travis-ci.org/php-soft/laravel-users)
 
 > This module is use JWTAuth and ENTRUST libraries
-> 
+>
 > 1. https://github.com/tymondesigns/jwt-auth (JSON Web Token)
 > 2. https://github.com/Zizaco/entrust (Role-based Permissions)
 
@@ -38,6 +38,15 @@ Next, also in the `app.php` config file, under the `aliases` array, you may want
     // ...
     'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
     'Entrust' => Zizaco\Entrust\EntrustFacade::class,
+]
+```
+
+You need to define namespace to your User model in the `phpsoft.user.php` config file, default with 'App\User'.
+
+```php
+'aliases' => [
+    // ...
+    'model' => 'App\User',
 ]
 ```
 
@@ -111,7 +120,7 @@ class User extends PhpSoftUser implements AuthenticatableContract, CanResetPassw
 
     // ...
 }
-``` 
+```
 
 Remove middlewares in `app/Http/Kernel.php`
 
@@ -230,14 +239,14 @@ $user->can(['edit-user', 'create-post']); // true
 
 ### 3.3 Forgot password
 
-To send mail forgot password, 
+To send mail forgot password,
 - You need to add address and name of sender in `config\mail.php` as follows:
 
 ```php
 'from' => ['address' => 'no-reply@example.com', 'name' => 'System'],
 ```
 
-- You need to create email view: 
+- You need to create email view:
 Create  `password.blade.php` file in folder `resources\views\emails` with contents as follows:
 
 ```php
@@ -298,7 +307,7 @@ protected $routeMiddleware = [
 Usage
 
 ```php
-Route::group(['middleware'=>'routePermission'], function() { 
+Route::group(['middleware'=>'routePermission'], function() {
     Route::post('/blog', function () {
         //
     });
@@ -358,7 +367,7 @@ class UserValidate implements Validator
 {
     /**
      * Custom validator
-     * 
+     *
      * @return boolean
      */
     public static function boot($request)
@@ -373,7 +382,7 @@ class UserValidate implements Validator
 
     /**
      * Declare rules
-     * 
+     *
      * @return array
      */
     public static function rules()
@@ -386,4 +395,4 @@ class UserValidate implements Validator
     }
 }
 ```
-Here, you will declare fields that you want to validate them in `rules()` function. And You can also custom validator fields that you want by declare them in `boot()` function. 
+Here, you will declare fields that you want to validate them in `rules()` function. And You can also custom validator fields that you want by declare them in `boot()` function.

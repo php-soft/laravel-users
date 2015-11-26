@@ -2,7 +2,7 @@
 
 namespace PhpSoft\Users\Models;
 
-use App\User as AppUser;
+use Config;
 use Illuminate\Database\Eloquent\Model;
 use PhpSoft\Users\Models\Role;
 
@@ -55,9 +55,10 @@ class User extends Model
      */
     public static function create(array $attributes = [])
     {
+        $userModel = config('phpsoft.users.model');
         $attributes['password'] = bcrypt($attributes['password']);
 
-        $user = new AppUser($attributes);
+        $user = new $userModel($attributes);
         $user->save();
 
         return $user;
@@ -93,7 +94,9 @@ class User extends Model
      */
     public static function browse($options = [])
     {
-        $find = new AppUser();
+        $userModel = config('phpsoft.users.model');
+
+        $find = new $userModel;
         $fillable = $find->fillable;
 
         if (!empty($options['filters'])) {
