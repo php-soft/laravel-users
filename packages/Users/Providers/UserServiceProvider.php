@@ -28,6 +28,11 @@ class UserServiceProvider extends ServiceProvider
 
         // Register commands
         $this->commands('phpsoft.users.command.migration');
+
+        // Publish migration files
+        $this->publishes([
+            __DIR__.'/../Commands/migrations' => base_path('database/migrations'),
+        ], 'migrations');
     }
 
     /**

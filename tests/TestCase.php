@@ -48,6 +48,7 @@ class TestCase extends Illuminate\Foundation\Testing\TestCase
         parent::setUp();
         @unlink(base_path('storage/database.sqlite'));
         @copy(base_path('storage/database.sqlite.blank'), base_path('storage/database.sqlite'));
+        Artisan::call('vendor:publish', ['--tag'=>['migrations']]);
         Artisan::call('migrate');
         Artisan::call('db:seed', [ '--class' => 'UserModuleSeeder' ]);
     }
