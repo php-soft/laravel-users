@@ -230,6 +230,43 @@ class UserControllerTest extends TestCase
         $this->assertNull($user);
     }
 
+    public function testMoveToTrash()
+    {
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        // test find not found
+        $res = $this->call('POST', '/users/5/trash', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals('404', $res->getStatusCode());
+
+        // test set user is delete
+        $user = factory(App\User::class)->create();
+        $res = $this->call('POST', '/users/' . $user->id . '/trash', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals('204', $res->getStatusCode());
+        $exists = App\User::find($user->id);
+        $this->assertNull($exists);
+        $user = App\User::onlyTrashed()->where('id', $user->id)->count();
+        $this->assertEquals(1, $user);
+    }
+
+    public function testRestoreFromTrash()
+    {
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        // test find not found
+        $res = $this->call('POST', '/users/5/restore', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals('404', $res->getStatusCode());
+
+        // test restore user
+        $user = factory(App\User::class)->create();
+        $res = $this->call('POST', '/users/' . $user->id . '/trash', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $res = $this->call('POST', '/users/' . $user->id . '/restore', [],[],[], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals('204', $res->getStatusCode());
+        $exists = App\User::find($user->id);
+        $this->assertEquals($user->name, $exists->name);
+        $existsTrash = App\User::onlyTrashed()->count();
+        $this->assertEquals(0, $existsTrash);
+    }
+
     public function testViewUser()
     {
         // test view user failure
@@ -622,5 +659,254 @@ class UserControllerTest extends TestCase
         $this->assertEquals('admin', $results->entities[0]->name);
         $this->assertEquals('editor1', $results->entities[1]->name);
         $this->assertEquals('editor2', $results->entities[2]->name);
+    }
+
+    public function testBrowseDraftNotFound()
+    {
+        $removeAllUsers = App\User::truncate();
+        $res = $this->call('GET', '/users/trash');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(0, count($results->entities));
+    }
+
+    public function testBrowseDraftFilters()
+    {
+        // check list users with filters
+        $res = $this->call('POST', '/users/1/trash');
+
+        // check with right params request
+        $res = $this->call('GET', '/users/trash?name=Administrator&email=admin@example.com');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+
+        // check with wrong params request
+        $res = $this->call('GET', '/users/trash?name=user&email=admin@example.com');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(0, count($results->entities));
+
+        // check fiter with number
+        $user = factory(App\User::class)->create(['gender' => 1]);
+        $res = $this->call('POST', '/users/' . $user->id . '/trash');
+        $user = factory(App\User::class)->create(['gender' => 11]);
+        $res = $this->call('POST', '/users/' . $user->id . '/trash');
+        $res = $this->call('GET', '/users/trash?gender=1');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+
+        $res = $this->call('GET', '/users/trash?gender=%1%');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(2, count($results->entities));
+
+        // check with params not in filters
+        $removeAllUsers = App\User::truncate();
+        // check with value of param is null
+
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        for ($i = 1 ; $i <= 10 ; $i++) {
+            $res = $this->call('POST', '/users/' . $i . '/trash');
+        }
+
+        $res = $this->call('GET', '/users/trash?password=password');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(0, count($results->entities));
+
+        // check with value of param is null
+        $res = $this->call('GET', '/users/trash?gender=');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($users), count($results->entities));
+    }
+
+    public function testBrowseDraftFound()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        for ($i = 1 ; $i <= 11 ; $i++) {
+            $res = $this->call('POST', '/users/' . $i . '/trash');
+        }
+
+        $res = $this->call('GET', '/users/trash');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(count($users)+1, count($results->entities));
+        $this->assertObjectHasAttribute('isBlock', $results->entities[0]);
+        for ($i = 0; $i < 10; ++$i) {
+            $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+            $this->assertFalse($results->entities[$i]->isBlock);
+        }
+    }
+
+    public function testBrowseDraftWithOrderWrongParams()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        for ($i = 1 ; $i <= 11 ; $i++) {
+            $res = $this->call('POST', '/users/' . $i . '/trash');
+        }
+
+        $arrayId = [];
+        for ($i = count($users)-1; $i >= 0; --$i) {
+            $arrayId[] = $users[$i]->id;
+        }
+
+        //check order users with emty params
+        $res = $this->call('GET', '/users/trash');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
+
+        // check order users with wrong params
+        $res = $this->call('GET', '/users/trash?sort=title&direction=aa');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
+
+        // check order users with the input doesn't has sort
+        $res = $this->call('GET', '/users/trash?direction=desc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayId[$i], $results->entities[$i]->id);
+        }
+    }
+
+    public function testBrowseDraftWithOrderRightParams()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create(['name'=>'Name ' . $i]);
+        }
+
+        for ($i = 1 ; $i <= 11 ; $i++) {
+            $res = $this->call('POST', '/users/' . $i . '/trash');
+        }
+
+        $arrayNameDesc = [];
+        for ($i = count($users)-1; $i >= 0; --$i) {
+            $arrayNameDesc[] = $users[$i]->name;
+        }
+
+        $arrayNameAsc = [];
+        for ($i = 0; $i < count($users); ++$i) {
+            $arrayNameAsc[] = $users[$i]->name;
+        }
+
+        // check order users with full input
+        $res = $this->call('GET', '/users/trash?sort=name&direction=desc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameDesc[$i], $results->entities[$i]->name);
+        }
+
+        $res = $this->call('GET', '/users/trash?sort=name&direction=asc');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameAsc[$i], $results->entities[$i+1]->name);
+        }
+
+        // check order users with only sort
+        $res = $this->call('GET', '/users/trash?sort=name');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        for ($i = 0; $i < count($users); ++$i) {
+            $this->assertEquals($arrayNameDesc[$i], $results->entities[$i]->name);
+        }
+    }
+
+    public function testBrowseDraftWithScroll()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        for ($i = 1 ; $i <= 11 ; $i++) {
+            $res = $this->call('POST', '/users/' . $i . '/trash');
+        }
+
+        // 5 items first
+        $res = $this->call('GET', '/users/trash?limit=5');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // 5 items next
+        $nextLink = $results->links->next->href;
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[4 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // over list
+        $nextLink = $results->links->next->href;
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
+    }
+
+    public function testBrowseDraftWithPagination()
+    {
+        $users = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $users[] = factory(App\User::class)->create();
+        }
+
+        for ($i = 1 ; $i <= 11 ; $i++) {
+            $res = $this->call('POST', '/users/' . $i . '/trash');
+        }
+
+        // 5 items first
+        $res = $this->call('GET', '/users/trash?limit=5');
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[9 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // 5 items next
+        $nextLink = '/users/trash?limit=5&page=2';
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(5, count($results->entities));
+        for ($i = 0; $i < 5; ++$i) {
+            $this->assertEquals($users[4 - $i]->id, $results->entities[$i]->id);
+        }
+
+        // over list
+        $nextLink = '/users/trash?limit=5&page=3';
+        $res = $this->call('GET', $nextLink);
+        $this->assertEquals(200, $res->getStatusCode());
+        $results = json_decode($res->getContent());
+        $this->assertEquals(1, count($results->entities));
     }
 }
