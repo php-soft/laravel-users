@@ -34,10 +34,13 @@ Route::post('/passwords/forgot', '\PhpSoft\Users\Controllers\PasswordController@
 Route::post('/passwords/reset', '\PhpSoft\Users\Controllers\PasswordController@reset');
 Route::group(['middleware'=>'routePermission'], function() {
 
+    Route::get('/users/trash', '\PhpSoft\Users\Controllers\UserController@index');
     Route::post('/users', '\PhpSoft\Users\Controllers\UserController@store');
     Route::get('/users/{id}', '\PhpSoft\Users\Controllers\UserController@show');
     Route::get('/users', '\PhpSoft\Users\Controllers\UserController@index');
     Route::delete('/users/{id}', '\PhpSoft\Users\Controllers\UserController@destroy');
+    Route::post('/users/{id}/trash', '\PhpSoft\Users\Controllers\UserController@moveToTrash');
+    Route::post('/users/{id}/restore', '\PhpSoft\Users\Controllers\UserController@restoreFromTrash');
     Route::patch('/users/{id}', '\PhpSoft\Users\Controllers\UserController@update');
     Route::post('/users/{id}/block', '\PhpSoft\Users\Controllers\UserController@block');
     Route::post('/users/{id}/unblock', '\PhpSoft\Users\Controllers\UserController@unblock');

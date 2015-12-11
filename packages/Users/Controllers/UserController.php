@@ -158,18 +158,14 @@ class UserController extends Controller
     public function destroy($id)
     {
         // get user by id
-        $user = AppUser::find($id);
+        $user = AppUser::withTrashed()->where('id', $id)->first();
 
         if (!$user) {
             return response()->json(null, 404);
         }
 
         // delete user
-        $deleteUser = $user->delete();
-
-        if (!$deleteUser) {
-            return response()->json(null, 500); // @codeCoverageIgnore
-        }
+        $deleteUser = $user->forceDelete();
 
         return response()->json(null, 204);
     }
@@ -199,12 +195,15 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $isTrash = $request->is('users/trash');
+
         $users = AppUser::browse([
             'order'     => [ Input::get('sort', 'id') => Input::get('direction', 'desc') ],
             'limit'     => ($limit = (int)Input::get('limit', 25)),
             'cursor'    => Input::get('cursor'),
             'offset'    => (Input::get('page', 1) - 1) * $limit,
-            'filters'   => $request->all()
+            'filters'   => $request->all(),
+            'trash'     => $isTrash
         ]);
 
         return response()->json(arrayView('phpsoft.users::user/browse', [
@@ -293,6 +292,46 @@ class UserController extends Controller
         }
 
         $user->attachRole($role);
+
+        return response()->json(null, 204);
+    }
+
+        /**
+     * move user to trash
+     * @param  int $id
+     * @return Response
+     */
+    public function moveToTrash($id)
+    {
+        $user = AppUser::find($id);
+
+        if (!$user) {
+            return response()->json(null, 404);
+        }
+
+        if (!$user->delete()) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
+
+        return response()->json(null, 204);
+    }
+
+    /**
+     * restore user
+     * @param  int $id
+     * @return Response
+     */
+    public function restoreFromTrash($id)
+    {
+        $user = AppUser::onlyTrashed()->where('id', $id);
+
+        if (!$user->count()) {
+            return response()->json(null, 404);
+        }
+
+        if (!$user->restore()) {
+            return response()->json(null, 500); // @codeCoverageIgnore
+        }
 
         return response()->json(null, 204);
     }

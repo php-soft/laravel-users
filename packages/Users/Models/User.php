@@ -4,10 +4,12 @@ namespace PhpSoft\Users\Models;
 
 use App\User as AppUser;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpSoft\Users\Models\Role;
 
 class User extends Model
 {
+    use SoftDeletes;
     use UserTrait;
 
     const STATUS_ACTIVE_EMAIL = 1;
@@ -19,6 +21,7 @@ class User extends Model
      * @var string
      */
     protected $table = 'users';
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -95,6 +98,10 @@ class User extends Model
     {
         $find = new AppUser();
         $fillable = $find->fillable;
+
+        if ($options['trash']) {
+            $find = $find->onlyTrashed();
+        }
 
         if (!empty($options['filters'])) {
             $inFilters = array_intersect($fillable, array_keys($options['filters']));
