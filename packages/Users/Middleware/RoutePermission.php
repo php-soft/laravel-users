@@ -48,13 +48,24 @@ class RoutePermission
     public function handle($request, Closure $next)
     {
         $route = $this->router->current()->methods()[0] . ' /' . $this->router->current()->uri();
+
         $isPermissionAllRoutes = RoutePermissionModel::getRoutePermissionsRoles('*');
         if ($isPermissionAllRoutes) {
-            $routePermission = $isPermissionAllRoutes;
-        } else {
-            $routePermission = RoutePermissionModel::getRoutePermissionsRoles($route);
+            if (($user = $this->user($request)) === 401) {
+                return response()->json(null, 401);
+            }
+
+            $hasRole  = $user->hasRole($isPermissionAllRoutes->roles, false);
+            $hasPerms = $user->can($isPermissionAllRoutes->permissions, false);
+
+            $hasRolePerm = $hasRole || $hasPerms || (is_array($isPermissionAllRoutes->roles) && in_array('@', $isPermissionAllRoutes->roles));
+
+            if (!$hasRolePerm) {
+                return response()->json(null, 403);
+            }
         }
 
+        $routePermission = RoutePermissionModel::getRoutePermissionsRoles($route);
         if ($routePermission) {
             if (($user = $this->user($request)) === 401) {
                 return response()->json(null, 401);
@@ -63,7 +74,7 @@ class RoutePermission
             $hasRole  = $user->hasRole($routePermission->roles, false);
             $hasPerms = $user->can($routePermission->permissions, false);
 
-            $hasRolePerm = $hasRole || $hasPerms || (is_array($routePermission->roles) && in_array('user', $routePermission->roles));
+            $hasRolePerm = $hasRole || $hasPerms || (is_array($routePermission->roles) && in_array('@', $routePermission->roles));
 
             if (!$hasRolePerm) {
                 return response()->json(null, 403);
