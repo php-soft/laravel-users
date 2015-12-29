@@ -83,4 +83,36 @@ class RoutePermissionTest extends TestCase
         $res = $this->call('POST', '/blog/1', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(200, $res->getStatusCode());
     }
+
+    public function testUserPermission()
+    {
+        RoutePermission::setRouteRoles('POST /blog/{id}', ['user']);
+
+        // not login
+        $res = $this->call('POST', '/blog/1');
+        $this->assertEquals(401, $res->getStatusCode());
+
+        // has login
+        $user = factory(App\User::class)->create(['password'=>bcrypt('123456')]);
+        $credentials = [ 'email' => $user->email, 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('POST', '/blog/1', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(200, $res->getStatusCode());
+    }
+
+    public function testSetRoutePermissionAllRouter()
+    {
+        RoutePermission::setRouteRoles('*', ['user']);
+
+        // not login
+        $res = $this->call('POST', '/blog/1');
+        $this->assertEquals(401, $res->getStatusCode());
+
+        // has login
+        $user = factory(App\User::class)->create(['password'=>bcrypt('123456')]);
+        $credentials = [ 'email' => $user->email, 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('POST', '/blog/1', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(200, $res->getStatusCode());
+    }
 }
