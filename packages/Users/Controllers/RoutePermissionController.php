@@ -21,7 +21,7 @@ class RoutePermissionController extends Controller
             if (is_array($array)) {
                 foreach ($array as $value) {
                     if ($attribute == "roles") {
-                        if ($value == 'user') {
+                        if ($value == '@') {
                             continue;
                         }
 

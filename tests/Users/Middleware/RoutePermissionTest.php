@@ -86,7 +86,7 @@ class RoutePermissionTest extends TestCase
 
     public function testUserPermission()
     {
-        RoutePermission::setRouteRoles('POST /blog/{id}', ['user']);
+        RoutePermission::setRouteRoles('POST /blog/{id}', ['@']);
 
         // not login
         $res = $this->call('POST', '/blog/1');
@@ -102,7 +102,7 @@ class RoutePermissionTest extends TestCase
 
     public function testSetRoutePermissionAllRouter()
     {
-        RoutePermission::setRouteRoles('*', ['user']);
+        RoutePermission::setRouteRoles('*', ['@']);
 
         // not login
         $res = $this->call('POST', '/blog/1');
@@ -111,6 +111,35 @@ class RoutePermissionTest extends TestCase
         // has login
         $user = factory(App\User::class)->create(['password'=>bcrypt('123456')]);
         $credentials = [ 'email' => $user->email, 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('POST', '/blog/1', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(200, $res->getStatusCode());
+    }
+
+    public function testSetRoutePermissionAllRouterAndCurrentRoute()
+    {
+        RoutePermission::setRouteRoles('*', ['@']);
+        RoutePermission::setRouteRoles('POST /blog/{id}', ['admin']);
+
+        // not login
+        $res = $this->call('POST', '/blog/1');
+        $this->assertEquals(401, $res->getStatusCode());
+
+        // has login, not admin
+        $user = factory(App\User::class)->create(['password'=>bcrypt('123456')]);
+        $credentials = [ 'email' => $user->email, 'password' => '123456' ];
+        $token = JWTAuth::attempt($credentials);
+        $res = $this->call('POST', '/blog/1', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
+        $this->assertEquals(403, $res->getStatusCode());
+    }
+
+    public function testSetRoutePermissionAllRouterAndCurrentRouteAdminAccess()
+    {
+        RoutePermission::setRouteRoles('*', ['@']);
+        RoutePermission::setRouteRoles('POST /blog/{id}', ['admin']);
+
+        // has login, is admin
+        $credentials = [ 'email' => 'admin@example.com', 'password' => '123456' ];
         $token = JWTAuth::attempt($credentials);
         $res = $this->call('POST', '/blog/1', [], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
         $this->assertEquals(200, $res->getStatusCode());
