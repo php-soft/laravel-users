@@ -48,7 +48,12 @@ class RoutePermission
     public function handle($request, Closure $next)
     {
         $route = $this->router->current()->methods()[0] . ' /' . $this->router->current()->uri();
-        $routePermission = RoutePermissionModel::getRoutePermissionsRoles($route);
+        $isPermissionAllRoutes = RoutePermissionModel::getRoutePermissionsRoles('*');
+        if ($isPermissionAllRoutes) {
+            $routePermission = $isPermissionAllRoutes;
+        } else {
+            $routePermission = RoutePermissionModel::getRoutePermissionsRoles($route);
+        }
 
         if ($routePermission) {
             if (($user = $this->user($request)) === 401) {
@@ -58,7 +63,7 @@ class RoutePermission
             $hasRole  = $user->hasRole($routePermission->roles, false);
             $hasPerms = $user->can($routePermission->permissions, false);
 
-            $hasRolePerm = $hasRole || $hasPerms;
+            $hasRolePerm = $hasRole || $hasPerms || (is_array($routePermission->roles) && in_array('user', $routePermission->roles));
 
             if (!$hasRolePerm) {
                 return response()->json(null, 403);

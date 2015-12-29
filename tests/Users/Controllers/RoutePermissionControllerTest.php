@@ -96,7 +96,7 @@ class RoutePermissionControllerTest extends TestCase
         $res = $this->call('POST', '/routePermissions', [
             'route'       => '/users',
             'permissions' => ['create-post', 'review'],
-            'roles'       => ['admin', 'manager']
+            'roles'       => ['admin', 'manager', 'user']
         ], [], [], ['HTTP_Authorization' => "Bearer {$token}"]);
 
         $this->assertEquals(201, $res->getStatusCode());
@@ -107,7 +107,7 @@ class RoutePermissionControllerTest extends TestCase
         $this->assertInternalType('array', $results->entities);
         $this->assertEquals('/users', $results->entities[0]->route);
         $this->assertEquals(['create-post', 'review'], $results->entities[0]->permissions);
-        $this->assertEquals(['admin', 'manager'], $results->entities[0]->roles);
+        $this->assertEquals(['admin', 'manager', 'user'], $results->entities[0]->roles);
     }
 
     public function testReadNotFound()
