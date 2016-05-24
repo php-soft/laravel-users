@@ -6,7 +6,6 @@ php:
 - 5.5.9
 
 before_script:
-  - phpenv config-rm xdebug.ini
   - composer self-update
   - composer install
 
