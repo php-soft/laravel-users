@@ -99,7 +99,7 @@ class User extends Model
         $find = new AppUser();
         $fillable = $find->fillable;
 
-        if ($options['trash']) {
+        if (!empty($options['trash'])) {
             $find = $find->onlyTrashed();
         }
 
